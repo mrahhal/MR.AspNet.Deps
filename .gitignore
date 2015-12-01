@@ -218,3 +218,4 @@ pip-log.txt
 *.lock.json
 **/node_modules/
 
+src/Common/AssemblyInfo.Common.cs
