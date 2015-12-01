@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build;Test;Package" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
-		<Major>0</Major>
+		<Major>1</Major>
 		<Minor>0</Minor>
-		<Patch>1</Patch>
+		<Patch>0</Patch>
 		<Build>0</Build>
-		<Quality></Quality>
+		<Quality>beta1</Quality>
 		<AssemblyProduct>An opinionated library that manages client side resources in AspNet5 (js, css, scss, ...)</AssemblyProduct>
 		<AssemblyCompany>MRH</AssemblyCompany>
 		<AssemblyCopyright>Copyright (c) 2015</AssemblyCopyright>
