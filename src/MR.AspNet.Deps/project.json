@@ -3,8 +3,8 @@
   "description": "An opinionated library that manages client side resources in AspNet5 (js, css, scss, ...)",
   "authors": [ "Mohammad Rahhal" ],
   "tags": [ "aspnet aspnet5" ],
-  "projectUrl": "",
-  "licenseUrl": "",
+  "projectUrl": "https://github.com/mrahhal/MR.AspNet.Deps",
+  "licenseUrl": "https://opensource.org/licenses/MIT",
   "frameworks": {
     "net451": { },
     "dotnet5.4": {
