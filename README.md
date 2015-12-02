@@ -1,4 +1,10 @@
 # MR.AspNet.Deps
+
+[![Build status](https://img.shields.io/appveyor/ci/mrahhal/mr-aspnet-deps/master.svg)](https://ci.appveyor.com/project/mrahhal/mr-aspnet-deps)
+[![Nuget version](https://img.shields.io/nuget/v/MR.AspNet.Deps.svg)](https://www.nuget.org/packages/MR.AspNet.Deps)
+[![Nuget downloads](https://img.shields.io/nuget/dt/MR.AspNet.Deps.svg)](https://www.nuget.org/packages/MR.AspNet.Deps)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 An opinionated library that manages client side resources in AspNet 5 (js, css, scss, ...)
 
 ## Note
