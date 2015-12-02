@@ -7,6 +7,8 @@
 
 An opinionated library that manages client side resources in AspNet 5 (js, css, scss, ...)
 
+Check the gulp-aspnet-deps's [folder](src/gulp-aspnet-deps) for info about it.
+
 ## Note
 This is a work in progress. When done, the process will consist of using a `bundle` tag helper + a gulp plugin to help with processing the bundles. All of this will depend on `deps.json`.
 
