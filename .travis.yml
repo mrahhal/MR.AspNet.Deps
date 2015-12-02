@@ -9,7 +9,7 @@ deploy:
   api_key:
     secure: LAK6q0Gduyy8WUgkBrl5eTuJ/NoPeBNXmk/c7O48c0Noz60nDeYtoRXPOlDZUnVGlbn7S5cT6qbODGb8okQqH15EGX6RBxaX3ULuUPO6IJjk3I3yH436sd9dyMhoFzvfT9zCt8seeh7A1MA8QJoBtbEaeCo489q+lPMwAPpqsqti0ZoWHjYZ0gIR1DenxXwsC9fcEOVwY9xCIBFfC1e4k05327j/fGaaCjuPPl80pIEgJvZUgsRyMuyI7RCSHo7T9WASCAfO96V04+4yU41UYDGvwh/tGX8YFj7VR1O4ZFkJVhBgg1Jr0tv93IayjI+97ARtYUEirfnHrGbqU9FGu/U9hpF3S3gXLTYx2xSSXlxldrhfSj7KE7IxrNOV9STWDmSqVwItl1j5T+872DbK8Pc9hhWoMcdPbED8h+2f5Td+jyYQJdJhJb4ZI//sTKs4iil+XXJpDM5HGvvo01id2hE0YrffCFdjGmlSvDJFDaEaWKWjhrfiMmCDbap7ZFGcNZXTQcglzJ6fTOGCjQTGD09PLhMZKIcMgL1WxRDNvQMQsWQczisyVBb0I390TNuP8vFBvBZ6PzwjnxPyr1wpJPW1A/L5xiAZzKd4Sp3HvgjD5lwCfr8M/U3hZ6Ijj57CUqnbqO07iGl66Ixy+AAIge0d38kZo7/DcCvMZerlGkg=
   on:
-    tags: false
+    tags: true
     repo: mrahhal/MR.AspNet.Deps
 notifications:
   email: false
