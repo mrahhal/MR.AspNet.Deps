@@ -1,0 +1,28 @@
+{
+  "name": "gulp-aspnet-deps",
+  "version": "1.0.0-beta1",
+  "description": "An opinionated library that manages client side resources in AspNet5 (js, css, scss, ...)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrahhal/MR.AspNet.Deps.git"
+  },
+  "keywords": [
+    "aspnet",
+    "build",
+    "client",
+    "resources"
+  ],
+  "author": "Mohammad Rahhal <m.r992@hotmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mrahhal/MR.AspNet.Deps/issues"
+  },
+  "homepage": "https://github.com/mrahhal/MR.AspNet.Deps#readme",
+  "dependencies": {
+    "merge-stream": "^1.0.0"
+  }
+}

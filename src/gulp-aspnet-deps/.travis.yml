@@ -1,0 +1,15 @@
+sudo: false
+language: node_js
+node_js:
+- stable
+before_script: cd src/gulp-aspnet-deps
+deploy:
+  provider: npm
+  email: m.r992@hotmail.com
+  api_key:
+    secure: H/X0zi9efZH9Sz59I6/Y24WpQDJPqR7n4J4c02fINRinRIjOby9WGY0BndiJlVpRVcKV4m3CTbPoc158C2IEnd2i6CBRAsfLuY9Z+mllwCEzBvzegI2/kGUOlwtd/izO07EFHgOTBNwiy/sQB5ixKo/nU3uo6CiGn+0W4K3WMkhIVsRhsLIfHGZ1fk4AOkotJm38YlGWqPQ/rB95Bho3d1ndIoo4zaszcVDAqhqc8Nzp2Jh1++jIEO0TNUlGWt0JptpCwvTj/nQrpgrg47QO5H7RtgT+w6hTuwhH6B4Z/omOPaXgxuQiF1pAqj0+BXVSdUHpT7hvKLy5CRbuqjgV1tOzK0UkvVpAyRCPBCtOQuLIWfXAIA3I3YHDl6RmvHbLOHeq4Fl2yr1y+dkz7bMlsA7AlHdvLSfQJP1+VHcxx75fNGJU6Jq44fuMa+QA6Vl641ncI2+/9AX4ZcEt1Yi83Z1C/iDfTGsWmRth5xyvsMYfWAFUGLjHztvLXcfrGewL1VjmrulHRIiKhHh/wKTS7KHJRmjctxcusG30iLpKryrpUadR+1f0rI/bhH1v56Mo5qLaT/nXel6dhFZD9CrwLwLCOGWfuOeTsLqkGFNl9B/UorPfKPP8bSHHeKO0oN26EX/9xEuPHOsXkGBIs6d7CYNzyMOcetrPD0w9y+lZcYw=
+  on:
+    tags: true
+    repo: mrahhal/MR.AspNet.Deps
+notifications:
+  email: false
