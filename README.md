@@ -19,6 +19,11 @@ This is just what I see as the most appropriate solution.
 # Overview
 MR.AspNet.Deps depends on a file named `deps.json` in the root of your application (next to project.json).
 
+Add Deps to the service collection:
+```c#
+services.AddDeps();
+```
+
 ## Structure of `deps.json`
 ```json
 {
