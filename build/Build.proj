@@ -5,7 +5,7 @@
 		<Minor>0</Minor>
 		<Patch>0</Patch>
 		<Build>0</Build>
-		<Quality>beta2</Quality>
+		<Quality>beta3</Quality>
 		<AssemblyProduct>An opinionated library that manages client side resources in AspNet 5 (js, css, scss, ...)</AssemblyProduct>
 		<AssemblyCompany>MRH</AssemblyCompany>
 		<AssemblyCopyright>Copyright (c) 2015</AssemblyCopyright>
