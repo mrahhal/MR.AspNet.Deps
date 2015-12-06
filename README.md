@@ -24,6 +24,11 @@ Add Deps to the service collection:
 services.AddDeps();
 ```
 
+Add the tag helpers in `_ViewImports.cshtml`:
+```
+@addTagHelper "*, MR.AspNet.Deps"
+```
+
 ## Structure of `deps.json`
 ```json
 {
