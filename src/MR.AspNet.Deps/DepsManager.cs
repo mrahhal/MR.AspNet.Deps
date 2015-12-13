@@ -31,8 +31,10 @@ namespace MR.AspNet.Deps
 			_options = options.Value;
 			_relative = new Uri(Path.Combine(_appEnv.ApplicationBasePath, "wwwroot/"));
 
-			deps = JsonConvert.DeserializeObject<Deps>(
-				File.ReadAllText(Path.Combine(_appEnv.ApplicationBasePath, "deps.json")));
+			if (_options.Cache || !_env.IsDevelopment())
+			{
+				LoadDeps();
+			}
 		}
 
 		public HtmlString RenderJs(string bundle)
@@ -42,6 +44,7 @@ namespace MR.AspNet.Deps
 
 			if (_env.IsDevelopment())
 			{
+				LoadDepsIfNecessary();
 				foreach (var b in deps.Js)
 				{
 					if (string.Equals(b.Name, bundle))
@@ -70,6 +73,7 @@ namespace MR.AspNet.Deps
 
 			if (_env.IsDevelopment())
 			{
+				LoadDepsIfNecessary();
 				foreach (var b in deps.Css)
 				{
 					if (string.Equals(b.Name, bundle))
@@ -88,6 +92,20 @@ namespace MR.AspNet.Deps
 			else
 			{
 				return new HtmlString(CreateLinkTag(bundle + ".css", true));
+			}
+		}
+
+		private void LoadDeps()
+		{
+			deps = JsonConvert.DeserializeObject<Deps>(
+				File.ReadAllText(Path.Combine(_appEnv.ApplicationBasePath, "deps.json")));
+		}
+
+		private void LoadDepsIfNecessary()
+		{
+			if (!_options.Cache)
+			{
+				LoadDeps();
 			}
 		}
 
