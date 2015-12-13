@@ -10,7 +10,7 @@ An opinionated library that manages client side resources in AspNet 5 (js, css, 
 Check the gulp-aspnet-deps's [folder](src/gulp-aspnet-deps) for info about it.
 
 ## Note
-This is a work in progress. When done, the process will consist of using a `bundle` tag helper + a gulp plugin to help with processing the bundles. All of this will depend on `deps.json`.
+This works exactly as I want and I'm already using it in production. The only thing keeping it a beta is that I'm not that happy with how the `deps.json` file is structured.
 
 # Rationale
 Managing client side resources is hell. There's no way other than an opinionated solution to manage this hell.
@@ -18,6 +18,7 @@ This is just what I see as the most appropriate solution.
 
 # Overview
 MR.AspNet.Deps depends on a file named `deps.json` in the root of your application (next to project.json).
+The process consists of using a `bundle` tag helper + a gulp plugin to help with processing the bundles. All of this will depend on `deps.json`.
 
 Add Deps to the service collection:
 ```c#
