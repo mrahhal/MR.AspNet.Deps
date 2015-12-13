@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Mvc.Rendering;
+using Microsoft.Extensions.OptionsModel;
 using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json;
 
@@ -14,29 +15,32 @@ namespace MR.AspNet.Deps
 	public class DepsManager
 	{
 		private ConcurrentDictionary<string, string[]> _cache = new ConcurrentDictionary<string, string[]>();
+		private IApplicationEnvironment _appEnv;
+		private IHostingEnvironment _env;
+		private DepsOptions _options;
 		private Deps deps;
 		private Uri _relative;
 
-		public DepsManager(IApplicationEnvironment appEnv, IHostingEnvironment env)
+		public DepsManager(
+			IApplicationEnvironment appEnv,
+			IHostingEnvironment env,
+			IOptions<DepsOptions> options)
 		{
-			ApplicationEnvironment = appEnv;
-			HostingEnvironment = env;
-			_relative = new Uri(Path.Combine(ApplicationEnvironment.ApplicationBasePath, "wwwroot/"));
+			_appEnv = appEnv;
+			_env = env;
+			_options = options.Value;
+			_relative = new Uri(Path.Combine(_appEnv.ApplicationBasePath, "wwwroot/"));
 
 			deps = JsonConvert.DeserializeObject<Deps>(
-				File.ReadAllText(Path.Combine(ApplicationEnvironment.ApplicationBasePath, "deps.json")));
+				File.ReadAllText(Path.Combine(_appEnv.ApplicationBasePath, "deps.json")));
 		}
-
-		private IApplicationEnvironment ApplicationEnvironment { get; set; }
-
-		private IHostingEnvironment HostingEnvironment { get; set; }
 
 		public HtmlString RenderJs(string bundle)
 		{
 			if (bundle == null)
 				throw new ArgumentNullException(nameof(bundle));
 
-			if (HostingEnvironment.IsDevelopment())
+			if (_env.IsDevelopment())
 			{
 				foreach (var b in deps.Js)
 				{
@@ -64,7 +68,7 @@ namespace MR.AspNet.Deps
 			if (bundle == null)
 				throw new ArgumentNullException(nameof(bundle));
 
-			if (HostingEnvironment.IsDevelopment())
+			if (_env.IsDevelopment())
 			{
 				foreach (var b in deps.Css)
 				{
@@ -89,18 +93,27 @@ namespace MR.AspNet.Deps
 
 		private string[] ExpandFiles(string bundle, string @base, IList<string> files, BundleKind kind)
 		{
-			@base = Path.Combine(ApplicationEnvironment.ApplicationBasePath, "wwwroot", @base);
-			return _cache.GetOrAdd(GetKeyForBundle(bundle, kind), (_) =>
+			@base = Path.Combine(_appEnv.ApplicationBasePath, "wwwroot", @base);
+			if (_options.Cache)
 			{
-				return files.SelectMany(
-					(fi) =>
-					{
-						return Glob
-							.ExpandNames(Path.Combine(@base, fi))
-							.Select((f) => "/" + _relative.MakeRelativeUri(new Uri(f)).ToString());
-					})
-					.ToArray();
-			});
+				return _cache.GetOrAdd(GetKeyForBundle(bundle, kind), (_) => ExpandFilesCore(@base, files));
+			}
+			else
+			{
+				return ExpandFilesCore(@base, files);
+			}
+		}
+
+		private string[] ExpandFilesCore(string @base, IList<string> files)
+		{
+			return files.SelectMany(
+				(fi) =>
+				{
+					return Glob
+					.ExpandNames(Path.Combine(@base, fi))
+					.Select((f) => "/" + _relative.MakeRelativeUri(new Uri(f)).ToString());
+				})
+				.ToArray();
 		}
 
 		private string CreateScriptTag(string src, bool appendVersion)
