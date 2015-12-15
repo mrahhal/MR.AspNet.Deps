@@ -196,20 +196,5 @@ namespace MR.AspNet.Deps
 					ViewContext?.HttpContext.Request.PathBase ?? new PathString());
 			}
 		}
-
-		private string GetKeyForBundle(string bundle, BundleKind kind)
-		{
-			switch (kind)
-			{
-				case BundleKind.Script:
-					return "sc_" + bundle;
-
-				case BundleKind.Style:
-					return "st_" + bundle;
-
-				default:
-					return null;
-			}
-		}
 	}
 }
