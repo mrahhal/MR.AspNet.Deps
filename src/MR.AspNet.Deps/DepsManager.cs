@@ -186,14 +186,25 @@ namespace MR.AspNet.Deps
 
 		private string CreateScriptTag(string src, bool appendVersion)
 		{
+			src = CorrectUrl(src);
 			src = appendVersion ? AppendVersion(src) : src;
 			return $"<script src=\"{src}\"></script>";
 		}
 
 		private string CreateLinkTag(string href, bool appendVersion)
 		{
+			href = CorrectUrl(href);
 			href = appendVersion ? AppendVersion(href) : href;
 			return $"<link rel=\"stylesheet\" href=\"{href}\" />";
+		}
+
+		private string CorrectUrl(string href)
+		{
+			if (href[0] != '/')
+			{
+				href = "/" + href;
+			}
+			return href;
 		}
 
 		private string AppendVersion(string path)

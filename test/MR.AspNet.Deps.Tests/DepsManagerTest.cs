@@ -48,6 +48,20 @@ namespace MR.AspNet.Deps.Tests
 			});
 		}
 
+		[Fact]
+		public void Render_UrlStartsWithSlash()
+		{
+			var provider = CreateDefaultServiceCollection(
+				isDevelopment: false,
+				depsFileName: "deps1.json")
+				.BuildServiceProvider();
+			var manager = provider.GetService<DepsManager>();
+
+			var result = manager.RenderJs("app").ToString();
+
+			Assert.Contains("/js/app.js", result);
+		}
+
 		private ServiceCollection CreateDefaultServiceCollection(
 			Action<DepsOptions> configureOptions = null,
 			string depsFileName = null,
