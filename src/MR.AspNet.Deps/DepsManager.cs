@@ -135,7 +135,7 @@ namespace MR.AspNet.Deps
 		private Deps LoadDeps()
 		{
 			var deps = default(Deps);
-			if (_memoryCache.TryGetValue(DepsFileName, out deps))
+			if (!_memoryCache.TryGetValue(DepsFileName, out deps))
 			{
 				var provider = _appRootFileProviderAccessor.AppRootFileProvider;
 				deps = JsonConvert.DeserializeObject<Deps>(ReadAllText(provider.GetFileInfo(DepsFileName)));
