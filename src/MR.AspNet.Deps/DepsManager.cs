@@ -86,7 +86,7 @@ namespace MR.AspNet.Deps
 			}
 			else
 			{
-				return new HtmlString(CreateScriptTag(bundle + ".js", true));
+				return new HtmlString(CreateScriptTag("js/" + bundle + ".js", true));
 			}
 		}
 
@@ -115,7 +115,7 @@ namespace MR.AspNet.Deps
 			}
 			else
 			{
-				return new HtmlString(CreateLinkTag(bundle + ".css", true));
+				return new HtmlString(CreateLinkTag("css/" + bundle + ".css", true));
 			}
 		}
 
