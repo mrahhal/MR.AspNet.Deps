@@ -12,6 +12,7 @@ namespace MR.AspNet.Deps
 				throw new ArgumentNullException(nameof(services));
 			}
 
+			services.AddSingleton<IAppRootFileProviderAccessor, PhysicalAppRootFileProviderAccessor>();
 			services.AddSingleton<DepsManager>();
 		}
 

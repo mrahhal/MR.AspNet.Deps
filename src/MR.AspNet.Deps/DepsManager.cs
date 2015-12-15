@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.AspNet.FileProviders;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc.Rendering;
@@ -19,12 +19,12 @@ namespace MR.AspNet.Deps
 {
 	public class DepsManager
 	{
-		private ConcurrentDictionary<string, string[]> _cache = new ConcurrentDictionary<string, string[]>();
+		private const string DepsFileName = "deps.json";
 		private IApplicationEnvironment _appEnv;
 		private IHostingEnvironment _env;
 		private IMemoryCache _memoryCache;
+		private IAppRootFileProviderAccessor _appRootFileProviderAccessor;
 		private DepsOptions _options;
-		private Deps deps;
 		private Uri _relative;
 		private FileVersionProvider _fileVersionProvider;
 
@@ -32,122 +32,132 @@ namespace MR.AspNet.Deps
 			IApplicationEnvironment appEnv,
 			IHostingEnvironment env,
 			IMemoryCache memoryCache,
+			IAppRootFileProviderAccessor appRootFileProviderAccessor,
 			IOptions<DepsOptions> options)
 		{
 			_appEnv = appEnv;
 			_env = env;
 			_memoryCache = memoryCache;
 			_options = options.Value;
-			_relative = new Uri(Path.Combine(_appEnv.ApplicationBasePath, "wwwroot/"));
-
-			if (_options.Cache || !_env.IsDevelopment())
-			{
-				LoadDeps();
-			}
+			_appRootFileProviderAccessor = appRootFileProviderAccessor;
+			_relative = new Uri(Path.Combine(_appEnv.ApplicationBasePath, _options.WebRoot));
 		}
 
 		[HtmlAttributeNotBound]
 		[ViewContext]
 		public ViewContext ViewContext { get; set; }
 
-		private void EnsureFileVersionProvider()
-		{
-			if (_fileVersionProvider == null)
-			{
-				_fileVersionProvider = new FileVersionProvider(
-					_env.WebRootFileProvider,
-					_memoryCache,
-					ViewContext?.HttpContext.Request.PathBase ?? new PathString());
-			}
-		}
-
 		public HtmlString RenderJs(string bundle)
 		{
 			if (bundle == null)
+			{
 				throw new ArgumentNullException(nameof(bundle));
+			}
 
-			if (_env.IsDevelopment())
-			{
-				LoadDepsIfNecessary();
-				foreach (var b in deps.Js)
-				{
-					if (string.Equals(b.Name, bundle))
-					{
-						var sb = new StringBuilder();
-						var files = ExpandFiles(bundle, b.Base, b.Files, BundleKind.Script);
-						foreach (var realFile in files)
-						{
-							sb.AppendLine(CreateScriptTag(realFile, false));
-						}
-						return new HtmlString(sb.ToString());
-					}
-				}
-				return null;
-			}
-			else
-			{
-				return new HtmlString(CreateScriptTag("js/" + bundle + ".js", true));
-			}
+			return RenderCore(bundle, BundleKind.Script);
 		}
 
 		public HtmlString RenderCss(string bundle)
 		{
 			if (bundle == null)
+			{
 				throw new ArgumentNullException(nameof(bundle));
+			}
+
+			return RenderCore(bundle, BundleKind.Style);
+		}
+
+		private HtmlString RenderCore(string name, BundleKind kind)
+		{
+			var deps = LoadDeps();
+
+			var section = kind == BundleKind.Script ? deps.Js : deps.Css;
+			var bundle = section
+				.FirstOrDefault(b => string.Equals(b.Name, name, StringComparison.OrdinalIgnoreCase));
+
+			if (bundle == null)
+			{
+				return null;
+			}
 
 			if (_env.IsDevelopment())
 			{
-				LoadDepsIfNecessary();
-				foreach (var b in deps.Css)
+				var sb = new StringBuilder();
+				var files = ExpandFiles(name, bundle.Base, bundle.Files, kind);
+				foreach (var realFile in files)
 				{
-					if (string.Equals(b.Name, bundle))
-					{
-						var sb = new StringBuilder();
-						var files = ExpandFiles(bundle, b.Base, b.Files, BundleKind.Style);
-						foreach (var realFile in files)
-						{
-							sb.AppendLine(CreateLinkTag(realFile, false));
-						}
-						return new HtmlString(sb.ToString());
-					}
+					sb.AppendLine(CreateLinkTag(realFile, false));
 				}
-				return null;
+				return new HtmlString(sb.ToString());
 			}
 			else
 			{
-				return new HtmlString(CreateLinkTag("css/" + bundle + ".css", true));
+				var fullName = GetFullName(bundle, kind);
+				return kind == BundleKind.Script ?
+					new HtmlString(CreateLinkTag(fullName, true)) :
+					new HtmlString(CreateScriptTag(fullName, true));
 			}
 		}
 
-		private void LoadDeps()
+		private string GetFullName(Bundle bundle, BundleKind kind)
 		{
-			deps = JsonConvert.DeserializeObject<Deps>(
-				File.ReadAllText(Path.Combine(_appEnv.ApplicationBasePath, "deps.json")));
+			var ext = GetExtension(kind);
+			var basePath = GetBasePath(kind);
+			return Path.Combine(basePath, bundle.Name + ext);
 		}
 
-		private void LoadDepsIfNecessary()
+		private string GetExtension(BundleKind kind)
 		{
-			if (!_options.Cache)
+			switch (kind)
 			{
-				LoadDeps();
+				case BundleKind.Script:
+					return ".js";
+
+				case BundleKind.Style:
+					return ".css";
+			}
+			return null;
+		}
+
+		private string GetBasePath(BundleKind kind)
+		{
+			switch (kind)
+			{
+				case BundleKind.Script:
+					return "js/";
+
+				case BundleKind.Style:
+					return "css/";
+			}
+			return null;
+		}
+
+		private Deps LoadDeps()
+		{
+			var deps = default(Deps);
+			if (_memoryCache.TryGetValue(DepsFileName, out deps))
+			{
+				var provider = _appRootFileProviderAccessor.AppRootFileProvider;
+				deps = JsonConvert.DeserializeObject<Deps>(ReadAllText(provider.GetFileInfo(DepsFileName)));
+				var cacheEntryOptions =
+					new MemoryCacheEntryOptions().AddExpirationToken(provider.Watch(DepsFileName));
+				_memoryCache.Set(DepsFileName, deps, cacheEntryOptions);
+			}
+			return deps;
+		}
+
+		private string ReadAllText(IFileInfo fileInfo)
+		{
+			using (var stream = fileInfo.CreateReadStream())
+			using (var reader = new StreamReader(stream))
+			{
+				return reader.ReadToEnd();
 			}
 		}
 
 		private string[] ExpandFiles(string bundle, string @base, IList<string> files, BundleKind kind)
 		{
-			@base = Path.Combine(_appEnv.ApplicationBasePath, "wwwroot", @base);
-			if (_options.Cache)
-			{
-				return _cache.GetOrAdd(GetKeyForBundle(bundle, kind), (_) => ExpandFilesCore(@base, files));
-			}
-			else
-			{
-				return ExpandFilesCore(@base, files);
-			}
-		}
-
-		private string[] ExpandFilesCore(string @base, IList<string> files)
-		{
+			@base = Path.Combine(_appEnv.ApplicationBasePath, _options.WebRoot, @base);
 			return files.SelectMany(
 				(fi) =>
 				{
@@ -174,6 +184,17 @@ namespace MR.AspNet.Deps
 		{
 			EnsureFileVersionProvider();
 			return _fileVersionProvider.AddFileVersionToPath(path);
+		}
+
+		private void EnsureFileVersionProvider()
+		{
+			if (_fileVersionProvider == null)
+			{
+				_fileVersionProvider = new FileVersionProvider(
+					_env.WebRootFileProvider,
+					_memoryCache,
+					ViewContext?.HttpContext.Request.PathBase ?? new PathString());
+			}
 		}
 
 		private string GetKeyForBundle(string bundle, BundleKind kind)

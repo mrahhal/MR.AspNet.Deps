@@ -2,6 +2,6 @@
 {
 	public class DepsOptions
 	{
-		public bool Cache { get; set; } = false;
+		public string WebRoot { get; set; } = "wwwroot/";
 	}
 }
