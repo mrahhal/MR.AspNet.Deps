@@ -2,7 +2,7 @@ sudo: false
 language: node_js
 node_js:
 - stable
-before_script: cd src/gulp-aspnet-deps
+before_script: cd src/gulp-aspnet-deps && npm install
 deploy:
   provider: npm
   email: m.r992@hotmail.com
