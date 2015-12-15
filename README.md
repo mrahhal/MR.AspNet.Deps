@@ -5,12 +5,9 @@
 [![Nuget downloads](https://img.shields.io/nuget/dt/MR.AspNet.Deps.svg)](https://www.nuget.org/packages/MR.AspNet.Deps)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-An opinionated library that manages client side resources in AspNet 5 (js, css, scss, ...)
+An opinionated library that manages client side resources in AspNet5 (js, css, scss, ...)
 
 Check the gulp-aspnet-deps's [folder](src/gulp-aspnet-deps) for info about it.
-
-## Note
-This works exactly as I want and I'm already using it in production. The only thing keeping it a beta is that I'm not that happy with how the `deps.json` file is structured.
 
 # Rationale
 Managing client side resources is hell. There's no way other than an opinionated solution to manage this hell.
@@ -33,9 +30,36 @@ Add the tag helpers in `_ViewImports.cshtml`:
 ## Structure of `deps.json`
 ```json
 {
-  "fonts": [
-    "lib/bootstrap/dist/fonts/*",
-    "lib/font-awesome/fonts/*"
+  "js": [
+    {
+      "name": "vendor",
+      "base": "lib/",
+      "files": [
+        "*"
+      ]
+    }
+  ],
+  "css": [
+  ],
+  "others": [
+  ]
+}
+```
+
+`MR.AspNet.Deps` is concerned only with the `js` and the `css` section. But you can (and should) use `deps.json` for all of your resources (such as sass files).
+You can process the bundles using the gulp plugin [`mr-aspnet-deps`](src/gulp-aspnet-deps).
+
+### An example of a `deps.json`
+```json
+{
+  "copy": [
+    {
+      "target": "fonts/",
+      "files": [
+        "lib/bootstrap-sass-official/assets/fonts/bootstrap/*",
+        "lib/font-awesome/fonts/*"
+      ]
+    }
   ],
   "js": [
     {

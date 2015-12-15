@@ -6,3 +6,29 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 A gulp plugin that helps with processing client side resources when working with [`MR.AspNet.Deps`](https://github.com/mrahhal/MR.AspNet.Deps).
+
+## Usage
+```js
+var deps = require('./deps.json');
+var depsBuilder = require('gulp-aspnet-deps');
+
+var depsHelper = depsBuilder.init({
+    base: './wwwroot/',
+});
+
+// An example with minification of js.
+gulp.task('min:js', function () {
+    return depsHelper.process(deps.js, function (bundle, files) {
+        return gulp.src(files)
+            .pipe(concat(abs(bundle.target + bundle.name + '.js')))
+            .pipe(uglify())
+            .pipe(gulp.dest('.'));
+    });
+});
+```
+
+`depsHelper.process` takes a section from the `deps.json` file and a function that will be called with a bundle object and the files with their full paths so you can directly call `gtlp.src` on them.
+
+### Utils you can use
+- `depsHelper.makeAbsolutePath`: takes a path and returns the absolute path relative to the `base` property you provided when calling `depsBuilder.init`.
+- `depsHelper.makeAbsoluteFiles`: takes a bundle and returns the absolute files relative to the `base` property you provided when calling `depsBuilder.init`.
