@@ -109,8 +109,8 @@ namespace MR.AspNet.Deps
 			{
 				var fullName = GetFullName(bundle, kind);
 				return kind == BundleKind.Script ?
-					new HtmlString(CreateLinkTag(fullName, true)) :
-					new HtmlString(CreateScriptTag(fullName, true));
+					new HtmlString(CreateScriptTag(fullName, true)) :
+					new HtmlString(CreateLinkTag(fullName, true));
 			}
 		}
 
