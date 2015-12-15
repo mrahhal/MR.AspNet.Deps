@@ -73,9 +73,9 @@
 			Command="rmdir artifacts /s /q" ContinueOnError="true" />
 	</Target>
 	<Target Name="Test" DependsOnTargets="Build">
-		<!--<Exec
+		<Exec
 			WorkingDirectory="$(RootDir)"
-			Command="dnx -p test/MR.AspNet.Deps.Tests test" />-->
+			Command="dnx -p test/MR.AspNet.Deps.Tests test" />
 	</Target>
 	<Target Name="Package" DependsOnTargets="Build;Test">
 		<MakeDir Directories="$(RootDir)artifacts/packages" />
