@@ -1,48 +1,96 @@
 /* global require, module */
 
-var merge = require('merge-stream');
+var merge = require('merge-stream'),
+	_ = require('lodash');
 
-var paths = {
-	webroot: './wwwroot/'
+var injected = {};
+
+var overrides = {
+	merge: function () {
+		var fn = injected.merge || merge;
+		fn.apply(null, arguments);
+	}
 };
 
-function abs(path) {
-	return paths.webroot + path;
-}
+var DEFAULTS = {
+	base: './wwwroot/'
+};
 
-function getFullFilesInBundle(bundle) {
-	var base = bundle.base;
-	var files = [];
+var util = {
+	ensureHasSlash: function (path) {
+		if (!path) {
+			return '';
+		} else if (path != '' && path[path.length - 1] != '/') {
+			path += '/';
+		}
+		return path;
+	}
+};
+
+var Helper = function (config) {
+	this.config = this._coarseConfig(config);
+};
+
+Helper.prototype.getDefaults = function () {
+	return _.extend({}, DEFAULTS);
+};
+
+Helper.prototype._coarseConfig = function (config) {
+	config.base = util.ensureHasSlash(config.base);
+	return config;
+};
+
+Helper.prototype.makeAbsolutePath = function (path) {
+	return this.config.base + path;
+};
+
+Helper.prototype.makeAbsoluteFiles = function (bundle) {
+	if (!bundle.files) {
+		return [];
+	}
+
+	var files = [],
+		base = util.ensureHasSlash(bundle.base);
+
 	for (var j = 0; j < bundle.files.length; j++) {
-		files.push(abs(base + bundle.files[j]));
+		files.push(this.makeAbsolutePath(base + bundle.files[j]));
 	}
 	return files;
-}
-
-function getExtFromKind(kind) {
-	if (kind === 'script') {
-		return '.js';
-	} else if (kind === 'style') {
-		return '.css';
-	} else {
-		throw 'Kind not supported.';
-	}
-}
-
-var processBundles = function (bundles, kind, action) {
-	return merge(bundles.map(function (bundle) {
-		var name = bundle.name ? (bundle.name + getExtFromKind(kind)) : null;
-		var files = getFullFilesInBundle(bundle);
-		return action (name, files);
-	}));
 };
 
-var processFonts = function (fonts, action) {
-	var expanded = fonts.map(function (f) { return abs(f); });
-	return action(expanded);
+Helper.prototype.process = function (bundles, action) {
+	var self = this;
+
+	if (!_.isArray(bundles)) {
+		throw 'the bundles arg should be an array of bundle objects';
+	}
+
+	var initials = [];
+	bundles.map(function (bundle) {
+		if (!bundle.files || !_.isArray(bundle.files)) {
+			throw 'all bundles should contain a "files" array';
+		}
+		var files = self.makeAbsoluteFiles(bundle);
+		return action(bundle, files);
+	});
+
+	var toMerge = [];
+	for (var i = 0; i < initials.length; i++) {
+		var t = initials[i];
+		if (t && typeof t.pipe === 'function') {
+			toMerge.push(t);
+		}
+	};
+
+	return overrides.merge(toMerge);
 };
 
 module.exports = {
-	processFonts: processFonts,
-	processBundles: processBundles
+	override: injected,
+	util: util,
+	Helper: Helper,
+	init: function (config) {
+		config = _.assign({}, DEFAULTS, config);
+		return new Helper(config);
+	}
 };

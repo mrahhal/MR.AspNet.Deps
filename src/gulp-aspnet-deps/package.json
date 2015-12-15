@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/mrahhal/MR.AspNet.Deps#readme",
   "dependencies": {
+    "lodash": "^3.10.1",
     "merge-stream": "^1.0.0"
   }
 }
