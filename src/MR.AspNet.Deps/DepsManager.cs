@@ -19,11 +19,11 @@ namespace MR.AspNet.Deps
 {
 	public class DepsManager
 	{
-		private const string DepsFileName = "deps.json";
 		private IApplicationEnvironment _appEnv;
 		private IHostingEnvironment _env;
 		private IMemoryCache _memoryCache;
 		private IAppRootFileProviderAccessor _appRootFileProviderAccessor;
+		private IGlob _glob;
 		private DepsOptions _options;
 		private Uri _relative;
 		private FileVersionProvider _fileVersionProvider;
@@ -33,6 +33,7 @@ namespace MR.AspNet.Deps
 			IHostingEnvironment env,
 			IMemoryCache memoryCache,
 			IAppRootFileProviderAccessor appRootFileProviderAccessor,
+			IGlob glob,
 			IOptions<DepsOptions> options)
 		{
 			_appEnv = appEnv;
@@ -40,6 +41,7 @@ namespace MR.AspNet.Deps
 			_memoryCache = memoryCache;
 			_options = options.Value;
 			_appRootFileProviderAccessor = appRootFileProviderAccessor;
+			_glob = glob;
 			_relative = new Uri(Path.Combine(_appEnv.ApplicationBasePath, _options.WebRoot));
 		}
 
@@ -78,6 +80,11 @@ namespace MR.AspNet.Deps
 			if (bundle == null)
 			{
 				return null;
+			}
+
+			if (bundle.Files == null)
+			{
+				throw new InvalidOperationException("Bundles should always contain a files property");
 			}
 
 			if (_env.IsDevelopment())
@@ -143,13 +150,14 @@ namespace MR.AspNet.Deps
 		private Deps LoadDeps()
 		{
 			var deps = default(Deps);
-			if (!_memoryCache.TryGetValue(DepsFileName, out deps))
+			var depsFileName = _options.DepsFileName;
+			if (!_memoryCache.TryGetValue(depsFileName, out deps))
 			{
 				var provider = _appRootFileProviderAccessor.AppRootFileProvider;
-				deps = JsonConvert.DeserializeObject<Deps>(ReadAllText(provider.GetFileInfo(DepsFileName)));
+				deps = JsonConvert.DeserializeObject<Deps>(ReadAllText(provider.GetFileInfo(depsFileName)));
 				var cacheEntryOptions =
-					new MemoryCacheEntryOptions().AddExpirationToken(provider.Watch(DepsFileName));
-				_memoryCache.Set(DepsFileName, deps, cacheEntryOptions);
+					new MemoryCacheEntryOptions().AddExpirationToken(provider.Watch(depsFileName));
+				_memoryCache.Set(_options.DepsFileName, deps, cacheEntryOptions);
 			}
 			return deps;
 		}
@@ -165,13 +173,13 @@ namespace MR.AspNet.Deps
 
 		private string[] ExpandFiles(string @base, IList<string> files)
 		{
-			@base = Path.Combine(_appEnv.ApplicationBasePath, _options.WebRoot, @base);
+			@base = Path.Combine(_appEnv.ApplicationBasePath, _options.WebRoot, @base ?? string.Empty);
 			return files.SelectMany(
 				(fi) =>
 				{
-					return Glob
-					.ExpandNames(Path.Combine(@base, fi))
-					.Select((f) => "/" + _relative.MakeRelativeUri(new Uri(f)).ToString());
+					return _glob
+						.Expand(Path.Combine(@base, fi))
+						.Select((f) => "/" + _relative.MakeRelativeUri(new Uri(f)).ToString());
 				})
 				.ToArray();
 		}

@@ -13,6 +13,7 @@ namespace MR.AspNet.Deps
 			}
 
 			services.AddSingleton<IAppRootFileProviderAccessor, PhysicalAppRootFileProviderAccessor>();
+			services.AddSingleton<IGlob, GlobAdapter>();
 			services.AddSingleton<DepsManager>();
 		}
 
