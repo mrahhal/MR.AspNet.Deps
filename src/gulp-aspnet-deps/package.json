@@ -4,7 +4,7 @@
   "description": "An opinionated library that manages client side resources in AspNet5 (js, css, scss, ...)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "test": "mocha test/test-*"
   },
   "repository": {
     "type": "git",
@@ -25,5 +25,9 @@
   "dependencies": {
     "lodash": "^3.10.1",
     "merge-stream": "^1.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.4",
+    "should": "^8.0.1"
   }
 }
