@@ -102,7 +102,7 @@ namespace MR.AspNet.Deps
 		private string GetFullName(Bundle bundle, BundleKind kind)
 		{
 			var ext = GetExtension(kind);
-			var basePath = GetBasePath(kind);
+			var basePath = GetBasePath(bundle, kind);
 			return Path.Combine(basePath, bundle.Name + ext);
 		}
 
@@ -119,15 +119,15 @@ namespace MR.AspNet.Deps
 			return null;
 		}
 
-		private string GetBasePath(BundleKind kind)
+		private string GetBasePath(Bundle bundle, BundleKind kind)
 		{
 			switch (kind)
 			{
 				case BundleKind.Script:
-					return "js/";
+					return bundle.Target ?? _options.ScriptsBasePath;
 
 				case BundleKind.Style:
-					return "css/";
+					return bundle.Target ?? _options.StylesBasePath;
 			}
 			return null;
 		}
