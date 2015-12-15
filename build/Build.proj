@@ -74,8 +74,8 @@
 	</Target>
 	<Target Name="Test" DependsOnTargets="Build">
 		<Exec
-			WorkingDirectory="$(RootDir)"
-			Command="dnx -p test/MR.AspNet.Deps.Tests test" />
+			WorkingDirectory="$(RootDir)/test/MR.AspNet.Deps.Tests/"
+			Command="dnx test" />
 	</Target>
 	<Target Name="Package" DependsOnTargets="Build;Test">
 		<MakeDir Directories="$(RootDir)artifacts/packages" />
