@@ -83,10 +83,18 @@ namespace MR.AspNet.Deps
 			if (_env.IsDevelopment())
 			{
 				var sb = new StringBuilder();
-				var files = ExpandFiles(name, bundle.Base, bundle.Files, kind);
+				var files = ExpandFiles(bundle.Base, bundle.Files);
 				foreach (var realFile in files)
 				{
-					sb.AppendLine(CreateLinkTag(realFile, false));
+					switch (kind)
+					{
+						case BundleKind.Script:
+							sb.AppendLine(CreateScriptTag(realFile, false));
+							break;
+						case BundleKind.Style:
+							sb.AppendLine(CreateLinkTag(realFile, false));
+							break;
+					}
 				}
 				return new HtmlString(sb.ToString());
 			}
@@ -155,7 +163,7 @@ namespace MR.AspNet.Deps
 			}
 		}
 
-		private string[] ExpandFiles(string bundle, string @base, IList<string> files, BundleKind kind)
+		private string[] ExpandFiles(string @base, IList<string> files)
 		{
 			@base = Path.Combine(_appEnv.ApplicationBasePath, _options.WebRoot, @base);
 			return files.SelectMany(
