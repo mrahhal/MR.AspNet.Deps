@@ -1,7 +1,7 @@
 {
   "name": "gulp-aspnet-deps",
   "version": "1.0.0-beta5",
-  "description": "An opinionated library that manages client side resources in AspNet 5 (js, css, scss, ...)",
+  "description": "An opinionated library that manages client side resources in AspNet5 (js, css, scss, ...)",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0"
