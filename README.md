@@ -11,7 +11,11 @@ Check the gulp-aspnet-deps's [folder](src/gulp-aspnet-deps) for info about it.
 
 # Rationale
 Managing client side resources is hell. There's no way other than an opinionated solution to manage this hell.
-This is just what I see as the most appropriate solution.
+
+This is all about reuse, as we don't want to specify our resources more than one time. This is not necessarily about making startup configuration small, as this is always needed. This is about long time sane maintenance of resources.
+
+# Samples
+For samples of how to work with both the `bundle` tag helper and the gulp plugin check the [samples](samples) folder.
 
 # Overview
 MR.AspNet.Deps depends on a file named `deps.json` in the root of your application (next to project.json).
