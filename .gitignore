@@ -220,3 +220,9 @@ pip-log.txt
 
 src/Common/AssemblyInfo.Common.cs
 *.dat
+samples/**/wwwroot/lib/
+samples/**/wwwroot/fonts
+samples/**/wwwroot/js
+samples/**/wwwroot/css
+samples/**/wwwroot/compiled
+
