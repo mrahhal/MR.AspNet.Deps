@@ -28,7 +28,7 @@ var util = {
 };
 
 var Helper = function (config) {
-	this.config = this._coarseConfig(config);
+	this.config = _.assign({}, DEFAULTS, config);
 };
 
 Helper.prototype.getDefaults = function () {
@@ -90,7 +90,6 @@ module.exports = {
 	util: util,
 	Helper: Helper,
 	init: function (config) {
-		config = _.assign({}, DEFAULTS, config);
 		return new Helper(config);
 	}
 };
