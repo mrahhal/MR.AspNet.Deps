@@ -1,7 +1,8 @@
 /* global require, module */
 
 var merge = require('merge-stream'),
-	_ = require('lodash');
+	_ = require('lodash'),
+	path = require('path');
 
 var injected = {};
 
@@ -13,19 +14,12 @@ var overrides = {
 };
 
 var DEFAULTS = {
-	base: './wwwroot/'
+	base: 'wwwroot'
 };
 
-var util = {
-	ensureHasSlash: function (path) {
-		if (!path) {
-			return '';
-		} else if (path != '' && path[path.length - 1] != '/') {
-			path += '/';
-		}
-		return path;
-	}
-};
+function join(/* */) {
+	return path.normalize(path.join.apply(null, arguments));
+}
 
 var Helper = function (config) {
 	this.config = _.assign({}, DEFAULTS, config);
@@ -35,13 +29,14 @@ Helper.prototype.getDefaults = function () {
 	return _.extend({}, DEFAULTS);
 };
 
-Helper.prototype._coarseConfig = function (config) {
-	config.base = util.ensureHasSlash(config.base);
-	return config;
+Helper.prototype._normalizeBundle = function (bundle) {
+	if (!bundle.base) {
+		bundle.base = '';
+	}
 };
 
-Helper.prototype.makeAbsolutePath = function (path) {
-	return this.config.base + path;
+Helper.prototype.makeAbsolutePath = function (val) {
+	return join(this.config.base, val);
 };
 
 Helper.prototype.makeAbsoluteFiles = function (bundle) {
@@ -49,11 +44,9 @@ Helper.prototype.makeAbsoluteFiles = function (bundle) {
 		return [];
 	}
 
-	var files = [],
-		base = util.ensureHasSlash(bundle.base);
-
+	var files = [];
 	for (var j = 0; j < bundle.files.length; j++) {
-		files.push(this.makeAbsolutePath(base + bundle.files[j]));
+		files.push(join(this.config.base, bundle.base, bundle.files[j]));
 	}
 	return files;
 };
@@ -67,11 +60,14 @@ Helper.prototype.process = function (bundles, action) {
 
 	var initials = [];
 	bundles.map(function (bundle) {
+		self._normalizeBundle(bundle);
+
 		if (!bundle.files || !_.isArray(bundle.files)) {
 			throw 'all bundles should contain a "files" array';
 		}
 		var files = self.makeAbsoluteFiles(bundle);
-		return action(bundle, files);
+		bundle.files = files;
+		return action(bundle);
 	});
 
 	var toMerge = [];
@@ -87,7 +83,6 @@ Helper.prototype.process = function (bundles, action) {
 
 module.exports = {
 	override: injected,
-	util: util,
 	Helper: Helper,
 	init: function (config) {
 		return new Helper(config);

@@ -1,9 +1,14 @@
 /* global describe, it */
 
 var should = require('should'),
-	builder = require('../index.js');
+	builder = require('../index.js'),
+	path = require('path');
 
-describe('builder', function () {
+function join(/* */) {
+	return path.normalize(path.join.apply(null, arguments));
+}
+
+describe('deps', function () {
 	it('should export interface', function () {
 		builder.should.have.property('Helper');
 		builder.should.have.property('init');
@@ -26,7 +31,12 @@ describe('builder', function () {
 
 		it('should correctly use the provided config', function () {
 			var helper = builder.init({ base: 'some' });
-			helper.config.should.have.property('base', 'some/');
+			helper.config.should.have.property('base', 'some');
+		});
+
+		it('should correctly use the default config', function () {
+			var helper = builder.init();
+			helper.config.should.have.property('base', helper.getDefaults().base);
 		});
 	});
 
@@ -80,7 +90,7 @@ describe('builder', function () {
 				}, {
 					name: 'app',
 					files: []
-				}], function (bundle, files) {
+				}], function (bundle) {
 				processedBundles.push(bundle);
 			});
 			processedBundles.length.should.be.exactly(2);
@@ -101,8 +111,8 @@ describe('builder', function () {
 					files: [
 						'foo.js'
 					]
-				}], function (bundle, files) {
-				files[0].should.be.exactly(helper.getDefaults().base + 'foo.js');
+				}], function (bundle) {
+				bundle.files[0].should.be.exactly(join(helper.getDefaults().base , 'foo.js'));
 			});
 		});
 
@@ -113,8 +123,8 @@ describe('builder', function () {
 					files: [
 						'foo.js'
 					]
-				}], function (bundle, files) {
-				files[0].should.be.exactly('./foo/foo.js');
+				}], function (bundle) {
+				bundle.files[0].should.be.exactly(join('foo', 'foo.js'));
 			});
 		});
 
@@ -126,9 +136,10 @@ describe('builder', function () {
 					files: [
 						'foo.js'
 					]
-				}], function (bundle, files) {
-				files[0].should.be.exactly('./foo/bar/foo.js');
+				}], function (bundle) {
+				bundle.files[0].should.be.exactly(join('foo', 'bar', 'foo.js'));
 			});
+		});
 		});
 	});
 });

@@ -16,8 +16,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
-    <Compile Include="test\test-basic.js" />
-    <Compile Include="test\test-util.js" />
+    <Compile Include="test\test-helper.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Compile Include="index.js" />
