@@ -145,8 +145,8 @@ describe('deps', function () {
 			helper = builder.init({ base: './foo/' });
 			helper.process([{
 					name: 'app',
-					base: 'bar',
-					target: '../baz',
+					base: 'bar/some/',
+					target: 'baz',
 					files: [
 						'foo.js'
 					]
@@ -156,10 +156,10 @@ describe('deps', function () {
 		});
 
 		it('should expand target properly if provided', function () {
-			helper = builder.init({ base: './foo/' });
+			helper = builder.init({ base: './foo/some/' });
 			helper.process([{
 					name: 'app',
-					base: 'bar',
+					base: 'bar/',
 					target: '../baz',
 					files: [
 						'foo.js'
