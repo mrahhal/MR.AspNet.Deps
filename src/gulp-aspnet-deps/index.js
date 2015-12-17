@@ -58,8 +58,7 @@ Helper.prototype.process = function (bundles, action) {
 		throw 'the bundles arg should be an array of bundle objects';
 	}
 
-	var initials = [];
-	bundles.map(function (bundle) {
+	var initials = bundles.map(function (bundle) {
 		self._normalizeBundle(bundle);
 
 		if (!bundle.files || !_.isArray(bundle.files)) {
@@ -84,7 +83,7 @@ Helper.prototype.process = function (bundles, action) {
 		}
 	};
 
-	return overrides.merge(toMerge);
+	return overrides.merge.apply(null, toMerge);
 };
 
 module.exports = {
