@@ -55,64 +55,7 @@ You can process the bundles using the gulp plugin [`gulp-aspnet-deps`](src/gulp-
 
 In each bundle only the `files` prop is required.
 
-### An example of a `deps.json`
-```json
-{
-  "copy": [
-    {
-      "target": "fonts/",
-      "files": [
-        "lib/bootstrap-sass-official/assets/fonts/bootstrap/*",
-        "lib/font-awesome/fonts/*"
-      ]
-    }
-  ],
-  "js": [
-    {
-      "base": "lib/",
-      "name": "vendor",
-      "files": [
-        "jquery/dist/jquery.js",
-        "bootstrap/dist/js/bootstrap.js"
-      ]
-    },
-    {
-      "base": "_dev/js/",
-      "name": "app",
-      "files": [
-        "main.js"
-      ]
-    }
-  ],
-  "css": [
-    {
-      "name": "vendor",
-      "base": "lib/",
-      "target": "css/",
-      "files": [
-        "bootstrap/dist/css/bootstrap.css",
-        "font-awesome/css/font-awesome.css"
-      ]
-    },
-    {
-      "name": "app",
-      "base": "compiled/css/",
-      "target": "css/",
-      "files": [
-        "*"
-      ]
-    }
-  ],
-  "sass": [
-    {
-      "base": "_dev/sass/",
-      "files": [
-        "*"
-      ]
-    }
-  ]
-}
-```
+For an example of a `deps.json` file check out the [samples](samples) folder.
 
 ## Usage
 Use the `bundle` tag helper in your layout file:
