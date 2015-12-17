@@ -65,6 +65,12 @@ Helper.prototype.process = function (bundles, action) {
 		if (!bundle.files || !_.isArray(bundle.files)) {
 			throw 'all bundles should contain a "files" array';
 		}
+
+		if (bundle.target) {
+			var target = join(self.config.base, bundle.base, bundle.target);
+			bundle.target = target;
+		}
+
 		var files = self.makeAbsoluteFiles(bundle);
 		bundle.files = files;
 		return action(bundle);

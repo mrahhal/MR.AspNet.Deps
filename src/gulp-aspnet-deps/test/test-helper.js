@@ -140,6 +140,33 @@ describe('deps', function () {
 				bundle.files[0].should.be.exactly(join('foo', 'bar', 'foo.js'));
 			});
 		});
+
+		it('should normalize paths', function () {
+			helper = builder.init({ base: './foo/' });
+			helper.process([{
+					name: 'app',
+					base: 'bar',
+					target: '../baz',
+					files: [
+						'foo.js'
+					]
+				}], function (bundle) {
+				bundle.target.should.be.exactly(path.normalize(path.join('foo', 'baz')));
+			});
+		});
+
+		it('should expand target properly if provided', function () {
+			helper = builder.init({ base: './foo/' });
+			helper.process([{
+					name: 'app',
+					base: 'bar',
+					target: '../baz',
+					files: [
+						'foo.js'
+					]
+				}], function (bundle) {
+				bundle.target.should.be.exactly(join('foo', 'baz'));
+			});
 		});
 	});
 });
