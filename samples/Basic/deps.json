@@ -52,6 +52,7 @@
   "sass": [
     {
       "base": "_dev/sass/",
+      "target": "compiled/css/",
       "files": [
         "*"
       ]

@@ -20,8 +20,8 @@
     "Microsoft.Extensions.Logging.Debug": "1.0.0-rc1-final",
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-rc1-final",
     "MR.AspNet.Deps": {
-      "target": "package",
-      "version": "1.0.0-rc1"
+      "target": "project",
+      "version": ""
     }
   },
 

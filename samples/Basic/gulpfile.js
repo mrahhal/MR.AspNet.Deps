@@ -11,7 +11,8 @@ var gulp = require("gulp"),
 	watch = require('gulp-watch'),
 	sourcemaps = require('gulp-sourcemaps'),
 	deps = require('./deps.json'),
-	depsBuilder = require('gulp-aspnet-deps');
+	depsBuilder = require('gulp-aspnet-deps'),
+	path = require('path');
 
 var paths = {
 	webroot: "./wwwroot/"
@@ -38,9 +39,9 @@ gulp.task('clean:css', function () {
 gulp.task("clean", ["clean:js", "clean:css"]);
 
 gulp.task('min:js', function () {
-	return depsHelper.process(deps.js, function (bundle, files) {
-		return gulp.src(files)
-			.pipe(concat(abs(bundle.target + bundle.name + '.js')))
+	return depsHelper.process(deps.js, function (bundle) {
+		return gulp.src(bundle.files)
+			.pipe(concat(path.join(bundle.target, bundle.name + '.js')))
 			.pipe(uglify())
 			.pipe(gulp.dest('.'));
 	});
@@ -60,28 +61,28 @@ gulp.task('watch:sass', function () {
 });
 
 gulp.task('compile:sass', function () {
-	return depsHelper.process(deps.sass, function (bundle, files) {
-		return gulp.src(files)
+	return depsHelper.process(deps.sass, function (bundle) {
+		return gulp.src(bundle.files)
 			.pipe(sourcemaps.init())
 			.pipe(sass().on('error', sass.logError))
 			.pipe(sourcemaps.write())
-			.pipe(gulp.dest(abs('compiled/css/')));
+			.pipe(gulp.dest(bundle.target));
 	});
 });
 
 gulp.task('min:css', ['compile:sass'], function () {
-	return depsHelper.process(deps.css, function (bundle, files) {
-		return gulp.src(files)
-			.pipe(concat(abs('css/' + bundle.name + '.css')))
+	return depsHelper.process(deps.css, function (bundle) {
+		return gulp.src(bundle.files)
+			.pipe(concat(path.join(bundle.target, bundle.name + '.css')))
 			.pipe(cssmin())
 			.pipe(gulp.dest('.'));
 	});
 });
 
 gulp.task('copy', function () {
-	return depsHelper.process(deps.copy, function (bundle, files) {
-		return gulp.src(files)
-			.pipe(gulp.dest(abs(bundle.target)));
+	return depsHelper.process(deps.copy, function (bundle) {
+		return gulp.src(bundle.files)
+			.pipe(gulp.dest(bundle.target));
 	});
 });
 
