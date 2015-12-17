@@ -18,16 +18,18 @@ var depsHelper = depsBuilder.init({
 
 // An example with minification of js.
 gulp.task('min:js', function () {
-    return depsHelper.process(deps.js, function (bundle, files) {
-        return gulp.src(files)
-            .pipe(concat(abs(bundle.target + bundle.name + '.js')))
+    return depsHelper.process(deps.js, function (bundle) {
+        return gulp.src(bundle.files)
+            .pipe(concat(path.join(bundle.target, bundle.name + '.js')))
             .pipe(uglify())
             .pipe(gulp.dest('.'));
     });
 });
 ```
 
-`depsHelper.process` takes a section from the `deps.json` file and a function that will be called with a bundle object and the files with their full paths so you can directly call `gtlp.src` on them.
+`depsHelper.process` takes a section from the `deps.json` file and a function that will be called with a bundle object and the files with their full paths so you can directly call `gulp.src` on them.
+
+The `bundle` object you get in the callback of the `process` function will have the `target` and the `files` properties resolved and normalized relative to the `base` property you provided when calling `depsBuilder.init` so you can use them in your gulpfile.
 
 ### Utils you can use
 - `depsHelper.makeAbsolutePath`: takes a path and returns the absolute path relative to the `base` property you provided when calling `depsBuilder.init`.

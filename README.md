@@ -86,16 +86,18 @@ In each bundle only the `files` prop is required.
   ],
   "css": [
     {
-      "base": "lib/",
       "name": "vendor",
+      "base": "lib/",
+      "target": "css/",
       "files": [
         "bootstrap/dist/css/bootstrap.css",
         "font-awesome/css/font-awesome.css"
       ]
     },
     {
-      "base": "compiled/css/",
       "name": "app",
+      "base": "compiled/css/",
+      "target": "css/",
       "files": [
         "*"
       ]
