@@ -168,5 +168,21 @@ describe('deps', function () {
 				bundle.target.should.be.exactly(join('foo', 'baz'));
 			});
 		});
+
+		it('should do destructive edits on a bundle copy instead of the original bundle', function () {
+			helper = builder.init({ base: './foo/some/' });
+			var section = [{
+					name: 'app',
+					base: 'bar/',
+					target: '../baz',
+					files: [
+						'foo.js'
+					]
+				}];
+			helper.process(section, function (bundle) {
+				bundle.foo = 42;
+			});
+			section[0].should.not.have.ownProperty('foo');
+		});
 	});
 });

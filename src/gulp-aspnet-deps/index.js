@@ -60,6 +60,7 @@ Helper.prototype.process = function (bundles, action) {
 
 	var initials = bundles.map(function (bundle) {
 		self._normalizeBundle(bundle);
+		bundle = _.assign({}, bundle);
 
 		if (!bundle.files || !_.isArray(bundle.files)) {
 			throw 'all bundles should contain a "files" array';
