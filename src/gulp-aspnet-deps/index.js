@@ -21,8 +21,9 @@ function join(/* */) {
 	return path.normalize(path.join.apply(null, arguments));
 }
 
-var Helper = function (config) {
-	this.config = _.assign({}, DEFAULTS, config);
+var Helper = function (deps) {
+	this.deps = deps;
+	this.config = _.assign({}, DEFAULTS, this.deps.config);
 };
 
 Helper.prototype.getDefaults = function () {
@@ -54,11 +55,34 @@ Helper.prototype.makeAbsoluteFiles = function (bundle) {
 	return src;
 };
 
-Helper.prototype.process = function (bundles, action) {
+Helper.prototype.process = function (sectionName, bundleName, action) {
 	var self = this;
 
-	if (!_.isArray(bundles)) {
-		throw 'the bundles arg should be an array of bundle objects';
+	if (_.isFunction(bundleName)) {
+		action = bundleName;
+		bundleName = undefined;
+	}
+
+	if (!_.isString(sectionName)) {
+		throw 'the sectionName should be a string refering to the name of the section';
+	}
+
+	var section = this.deps[sectionName];
+	if (!section) {
+		return;
+	}
+
+	var bundles = [];
+	if (bundleName) {
+		for (var i = 0; i < section.length; i++) {
+			var b = section[i];
+			if (bundleName === b.name) {
+				bundles.push(b);
+				break;
+			}
+		};
+	} else {
+		bundles = section;
 	}
 
 	var initials = bundles.map(function (bundle) {
@@ -93,7 +117,7 @@ Helper.prototype.process = function (bundles, action) {
 module.exports = {
 	override: injected,
 	Helper: Helper,
-	init: function (config) {
-		return new Helper(config);
+	init: function (deps) {
+		return new Helper(deps);
 	}
 };
