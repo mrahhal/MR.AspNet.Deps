@@ -62,14 +62,6 @@ describe('deps', function () {
 			resetOverrides();
 		});
 
-		it('should throw if no files exist in a bundle', function () {
-			should.throws(function () {
-				helper.process([{
-						name: "app"
-					}], function () { });
-			});
-		});
-
 		it('should throw if the bundles arg is invalid', function () {
 			should.throws(function () {
 				helper.process({}, function () { });
@@ -86,10 +78,10 @@ describe('deps', function () {
 			var processedBundles = [];
 			helper.process([{
 					name: 'vendor',
-					files: []
+					src: []
 				}, {
 					name: 'app',
-					files: []
+					src: []
 				}], function (bundle) {
 				processedBundles.push(bundle);
 			});
@@ -99,45 +91,45 @@ describe('deps', function () {
 		it('should maintain values in the bundle', function () {
 			helper.process([{
 					foo: 'bar',
-					files: []
+					src: []
 				}], function (bundle) {
 				bundle.should.have.property('foo', 'bar');
 			});
 		});
 
-		it('should expand files properly when no base is provided', function () {
+		it('should expand src properly when no base is provided', function () {
 			helper.process([{
 					name: 'app',
-					files: [
+					src: [
 						'foo.js'
 					]
 				}], function (bundle) {
-				bundle.files[0].should.be.exactly(join(helper.getDefaults().base , 'foo.js'));
+				bundle.src[0].should.be.exactly(join(helper.getDefaults().base , 'foo.js'));
 			});
 		});
 
-		it('should expand files properly when a base is provided', function () {
+		it('should expand src properly when a base is provided', function () {
 			helper = builder.init({ base: './foo/' });
 			helper.process([{
 					name: 'app',
-					files: [
+					src: [
 						'foo.js'
 					]
 				}], function (bundle) {
-				bundle.files[0].should.be.exactly(join('foo', 'foo.js'));
+				bundle.src[0].should.be.exactly(join('foo', 'foo.js'));
 			});
 		});
 
-		it('should expand files properly when a base is provided in the bundle', function () {
+		it('should expand src properly when a base is provided in the bundle', function () {
 			helper = builder.init({ base: './foo/' });
 			helper.process([{
 					name: 'app',
 					base: 'bar',
-					files: [
+					src: [
 						'foo.js'
 					]
 				}], function (bundle) {
-				bundle.files[0].should.be.exactly(join('foo', 'bar', 'foo.js'));
+				bundle.src[0].should.be.exactly(join('foo', 'bar', 'foo.js'));
 			});
 		});
 
@@ -146,26 +138,26 @@ describe('deps', function () {
 			helper.process([{
 					name: 'app',
 					base: 'bar/some/',
-					target: 'baz',
-					files: [
+					dest: 'baz',
+					src: [
 						'foo.js'
 					]
 				}], function (bundle) {
-				bundle.target.should.be.exactly(path.normalize(path.join('foo', 'baz')));
+				bundle.dest.should.be.exactly(path.normalize(path.join('foo', 'baz')));
 			});
 		});
 
-		it('should expand target properly if provided', function () {
+		it('should expand dest properly if provided', function () {
 			helper = builder.init({ base: './foo/some/' });
 			helper.process([{
 					name: 'app',
 					base: 'bar/',
-					target: '../baz',
-					files: [
+					dest: '../baz',
+					src: [
 						'foo.js'
 					]
 				}], function (bundle) {
-				bundle.target.should.be.exactly(join('foo', 'baz'));
+				bundle.dest.should.be.exactly(join('foo', 'baz'));
 			});
 		});
 
@@ -174,8 +166,8 @@ describe('deps', function () {
 			var section = [{
 					name: 'app',
 					base: 'bar/',
-					target: '../baz',
-					files: [
+					dest: '../baz',
+					src: [
 						'foo.js'
 					]
 				}];

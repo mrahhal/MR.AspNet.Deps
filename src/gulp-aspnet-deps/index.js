@@ -33,6 +33,9 @@ Helper.prototype._normalizeBundle = function (bundle) {
 	if (!bundle.base) {
 		bundle.base = '';
 	}
+	if (!bundle.src) {
+		bundle.src = [];
+	}
 };
 
 Helper.prototype.makeAbsolutePath = function (val) {
@@ -40,15 +43,15 @@ Helper.prototype.makeAbsolutePath = function (val) {
 };
 
 Helper.prototype.makeAbsoluteFiles = function (bundle) {
-	if (!bundle.files) {
+	if (!bundle.src) {
 		return [];
 	}
 
-	var files = [];
-	for (var j = 0; j < bundle.files.length; j++) {
-		files.push(join(this.config.base, bundle.base, bundle.files[j]));
+	var src = [];
+	for (var j = 0; j < bundle.src.length; j++) {
+		src.push(join(this.config.base, bundle.base, bundle.src[j]));
 	}
-	return files;
+	return src;
 };
 
 Helper.prototype.process = function (bundles, action) {
@@ -62,17 +65,17 @@ Helper.prototype.process = function (bundles, action) {
 		self._normalizeBundle(bundle);
 		bundle = _.assign({}, bundle);
 
-		if (!bundle.files || !_.isArray(bundle.files)) {
-			throw 'all bundles should contain a "files" array';
+		if (bundle.src && !_.isArray(bundle.src)) {
+			throw 'src should be an array';
 		}
 
-		if (bundle.target) {
-			var target = join(self.config.base, bundle.target);
-			bundle.target = target;
+		if (bundle.dest) {
+			var dest = join(self.config.base, bundle.dest);
+			bundle.dest = dest;
 		}
 
-		var files = self.makeAbsoluteFiles(bundle);
-		bundle.files = files;
+		var src = self.makeAbsoluteFiles(bundle);
+		bundle.src = src;
 		return action(bundle);
 	});
 
