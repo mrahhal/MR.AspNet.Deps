@@ -1,4 +1,4 @@
-﻿/// <binding Clean='clean' />
+﻿/// <binding Clean='clean' ProjectOpened='compile:sass' />
 "use strict";
 
 var gulp = require("gulp"),
@@ -10,20 +10,11 @@ var gulp = require("gulp"),
 	sass = require('gulp-sass'),
 	watch = require('gulp-watch'),
 	sourcemaps = require('gulp-sourcemaps'),
-	deps = require('./deps.json'),
-	depsBuilder = require('gulp-aspnet-deps'),
+	deps = require('gulp-aspnet-deps').init(require('./deps.json')),
 	path = require('path');
 
-var paths = {
-	webroot: "./wwwroot/"
-};
-
-var depsHelper = depsBuilder.init({
-	base: paths.webroot
-});
-
 function abs() {
-	return depsHelper.makeAbsolutePath.apply(depsHelper, arguments);
+	return deps.makeAbsolutePath.apply(deps, arguments);
 }
 
 gulp.task('clean:js', function () {
@@ -39,9 +30,9 @@ gulp.task('clean:css', function () {
 gulp.task("clean", ["clean:js", "clean:css"]);
 
 gulp.task('min:js', function () {
-	return depsHelper.process(deps.js, function (bundle) {
-		return gulp.src(bundle.files)
-			.pipe(concat(path.join(bundle.target, bundle.name + '.js')))
+	return deps.process('js', function (bundle) {
+		return gulp.src(bundle.src)
+			.pipe(concat(path.join(bundle.dest, bundle.name + '.js')))
 			.pipe(uglify())
 			.pipe(gulp.dest('.'));
 	});
@@ -49,40 +40,46 @@ gulp.task('min:js', function () {
 
 gulp.task('watch:sass', function () {
 	var files = [];
-	for (var i = 0; i < deps.sass.length; i++) {
-		var t = depsHelper.makeAbsoluteFiles(deps.sass[i]);
-		for (var j = 0; j < t.length; j++) {
-			files.push(t[j]);
-		}
-	}
+	deps.process('sass', function (bundle) {
+		Array.prototype.push.apply(files, bundle.src);
+	});
+
+	//var files = [];
+	//for (var i = 0; i < deps.sass.length; i++) {
+	//	var t = depsHelper_____________.makeAbsoluteFiles(deps.sass[i]);
+	//	for (var j = 0; j < t.length; j++) {
+	//		files.push(t[j]);
+	//	}
+	//}
 	watch(files, function () {
 		gulp.start('compile:sass');
 	});
 });
 
 gulp.task('compile:sass', function () {
-	return depsHelper.process(deps.sass, function (bundle) {
-		return gulp.src(bundle.files)
+	return deps.process('sass', function (bundle) {
+		return gulp.src(bundle.src)
 			.pipe(sourcemaps.init())
 			.pipe(sass().on('error', sass.logError))
 			.pipe(sourcemaps.write())
-			.pipe(gulp.dest(bundle.target));
+			.pipe(gulp.dest(bundle.dest));
 	});
 });
 
-gulp.task('min:css', ['compile:sass'], function () {
-	return depsHelper.process(deps.css, function (bundle) {
-		return gulp.src(bundle.files)
-			.pipe(concat(path.join(bundle.target, bundle.name + '.css')))
+gulp.task('min:css', function () {
+	return deps.process('css', function (bundle) {
+		return gulp.src(bundle.src)
+			.pipe(sass())
+			.pipe(concat(path.join(bundle.dest, bundle.name + '.css')))
 			.pipe(cssmin())
 			.pipe(gulp.dest('.'));
 	});
 });
 
 gulp.task('copy', function () {
-	return depsHelper.process(deps.copy, function (bundle) {
-		return gulp.src(bundle.files)
-			.pipe(gulp.dest(bundle.target));
+	return deps.process('copy', function (bundle) {
+		return gulp.src(bundle.src)
+			.pipe(gulp.dest(bundle.dest));
 	});
 });
 

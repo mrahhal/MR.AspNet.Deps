@@ -1,8 +1,11 @@
 {
+  "config": {
+    "base": "./wwwroot/"
+  },
   "copy": [
     {
-      "target": "fonts/",
-      "files": [
+      "dest": "fonts/",
+      "src": [
         "lib/bootstrap/dist/fonts/*",
         "lib/font-awesome/fonts/*"
       ]
@@ -12,8 +15,8 @@
     {
       "base": "lib/",
       "name": "vendor",
-      "target": "js/",
-      "files": [
+      "dest": "js/",
+      "src": [
         "jquery/dist/jquery.js",
         "jquery-validation/dist/jquery.validate.js",
         "jquery-validation-unobtrusive/jquery.validate.unobtrusive.js",
@@ -23,9 +26,9 @@
     {
       "base": "_dev/js/",
       "name": "app",
-      "target": "js/",
+      "dest": "js/",
       "lint": true,
-      "files": [
+      "src": [
         "site.js"
       ]
     }
@@ -34,8 +37,8 @@
     {
       "base": "lib/",
       "name": "vendor",
-      "target": "css/",
-      "files": [
+      "dest": "css/",
+      "src": [
         "bootstrap/dist/css/bootstrap.css",
         "font-awesome/css/font-awesome.css"
       ]
@@ -43,17 +46,22 @@
     {
       "base": "compiled/css/",
       "name": "app",
-      "target": "css/",
-      "files": [
+      "dest": "css/",
+      "refs": {
+        "section": "sass",
+        "bundles": [ "app" ]
+      },
+      "src": [
         "*"
       ]
     }
   ],
   "sass": [
     {
+      "name": "app",
       "base": "_dev/sass/",
-      "target": "compiled/css/",
-      "files": [
+      "dest": "compiled/css/",
+      "src": [
         "*"
       ]
     }
