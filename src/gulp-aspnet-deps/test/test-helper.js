@@ -187,5 +187,81 @@ describe('deps', function () {
 				bundle.name.should.be.exactly('app');
 			});
 		});
+
+		it('should process the specified bundle names', function () {
+			var count = 0;
+			var section = [{
+					name: 'app'
+				}, {
+					name: 'vendor'
+				}, {
+					name: 'other'
+				}];
+			process(section, [ 'app', 'other' ], function (bundle) {
+				count++;
+			});
+			count.should.be.exactly(2);
+		});
+
+		describe('refs', function () {
+			it('should process the refs', function () {
+				var deps = {
+					sec1: [{
+							name: 'app',
+							refs: {
+								section: 'sec2',
+								bundles: ['app']
+							},
+							src: [
+								'bar.js'
+							]
+						}
+					],
+					sec2: [{
+							name: 'app',
+							src: [
+								'foo.js'
+							]
+						}
+					]
+				};
+
+				var helper = builder.init(deps);
+
+				helper.process('sec1', 'app', function (bundle) {
+					bundle.src.length.should.be.exactly(1);
+				});
+			});
+
+			it('should not ignore the src if includeSrc is specified', function () {
+				var deps = {
+					sec1: [{
+							name: 'app',
+							refs: {
+								section: 'sec2',
+								bundles: ['app']
+							},
+							includeSrc: true,
+							src: [
+								'bar.js'
+							]
+						}
+					],
+					sec2: [{
+							name: 'app',
+							src: [
+								'foo.js'
+							]
+						}
+					]
+				};
+
+				var helper = builder.init(deps);
+
+				helper.process('sec1', 'app', function (bundle) {
+					bundle.src.length.should.be.exactly(2);
+				});
+			});
+		});
 	});
 });
