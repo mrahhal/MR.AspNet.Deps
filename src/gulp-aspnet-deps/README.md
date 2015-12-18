@@ -9,28 +9,23 @@ A gulp plugin that helps with processing client side resources when working with
 
 ## Usage
 ```js
-var deps = require('./deps.json');
-var depsBuilder = require('gulp-aspnet-deps');
-
-var depsHelper = depsBuilder.init({
-    base: './wwwroot/',
-});
+var deps = require('gulp-aspnet-deps').init(require('./deps.json'));
 
 // An example with minification of js.
 gulp.task('min:js', function () {
-    return depsHelper.process(deps.js, function (bundle) {
-        return gulp.src(bundle.files)
-            .pipe(concat(path.join(bundle.target, bundle.name + '.js')))
+    return deps.process('js', function (bundle) {
+        return gulp.src(bundle.src)
+            .pipe(concat(path.join(bundle.dest, bundle.name + '.js')))
             .pipe(uglify())
             .pipe(gulp.dest('.'));
     });
 });
 ```
 
-`depsHelper.process` takes a section from the `deps.json` file and a function that will be called with a bundle object and the files with their full paths so you can directly call `gulp.src` on them.
+`deps.process` takes a section from the `deps.json` file and a function that will be called with a bundle object and the files with their full paths so you can directly call `gulp.src` on them.
 
-The `bundle` object you get in the callback of the `process` function will have the `target` and the `files` properties resolved and normalized relative to the `base` property you provided when calling `depsBuilder.init` so you can use them in your gulpfile.
+The `bundle` object you get in the callback of the `process` function will have the `dest` and the `src` properties resolved and normalized relative to `config.base` in `deps.json` so you can use them in your gulpfile.
 
 ### Utils you can use
-- `depsHelper.makeAbsolutePath`: takes a path and returns the absolute path relative to the `base` property you provided when calling `depsBuilder.init`.
-- `depsHelper.makeAbsoluteFiles`: takes a bundle and returns the absolute files relative to the `base` property you provided when calling `depsBuilder.init`.
+- `deps.makeAbsolutePath`: takes a path and returns the absolute path relative to `config.base`.
+- `deps.makeAbsoluteFiles`: takes a bundle and returns the absolute files relative to `config.base`.

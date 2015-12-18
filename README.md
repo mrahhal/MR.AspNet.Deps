@@ -38,7 +38,7 @@ Add the tag helpers in `_ViewImports.cshtml`:
     {
       "name": "vendor",
       "base": "lib/",
-      "files": [
+      "src": [
         "*"
       ]
     }
@@ -52,8 +52,6 @@ Add the tag helpers in `_ViewImports.cshtml`:
 
 `MR.AspNet.Deps` is concerned only with the `js` and the `css` sections. But you can (and should) use `deps.json` for all of your resources (such as sass files).
 You can process the bundles using the gulp plugin [`gulp-aspnet-deps`](src/gulp-aspnet-deps).
-
-In each bundle only the `files` prop is required.
 
 For an example of a `deps.json` file check out the [samples](samples) folder.
 
