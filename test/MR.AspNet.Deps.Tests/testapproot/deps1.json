@@ -2,7 +2,7 @@
   "js": [
     {
       "name": "app",
-      "files": [ ]
+      "src": [ ]
     }
   ],
   "css": [

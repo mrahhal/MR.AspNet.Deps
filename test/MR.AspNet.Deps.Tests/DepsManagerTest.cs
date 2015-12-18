@@ -34,21 +34,6 @@ namespace MR.AspNet.Deps.Tests
 		}
 
 		[Fact]
-		public void Render_FilesDoesNotExist_Throws()
-		{
-			var provider = CreateDefaultServiceCollection(
-				isDevelopment: true,
-				depsFileName: "deps1.json")
-				.BuildServiceProvider();
-			var manager = provider.GetService<DepsManager>();
-
-			Assert.Throws<InvalidOperationException>(() =>
-			{
-				manager.RenderCss("app");
-			});
-		}
-
-		[Fact]
 		public void Render_UrlStartsWithSlash()
 		{
 			var provider = CreateDefaultServiceCollection(

@@ -82,15 +82,20 @@ namespace MR.AspNet.Deps
 				return null;
 			}
 
-			if (bundle.Files == null)
+			if (bundle.Base == null)
 			{
-				throw new InvalidOperationException("Bundles should always contain a files property");
+				bundle.Base = string.Empty;
+			}
+
+			if (bundle.Src == null)
+			{
+				bundle.Src = new List<string>();
 			}
 
 			if (_env.IsDevelopment())
 			{
 				var sb = new StringBuilder();
-				var files = ExpandFiles(bundle.Base, bundle.Files);
+				var files = ExpandFiles(bundle.Base, bundle.Src);
 				foreach (var realFile in files)
 				{
 					switch (kind)
@@ -139,10 +144,10 @@ namespace MR.AspNet.Deps
 			switch (kind)
 			{
 				case BundleKind.Script:
-					return bundle.Target ?? _options.ScriptsBasePath;
+					return bundle.Dest ?? _options.ScriptsBasePath;
 
 				case BundleKind.Style:
-					return bundle.Target ?? _options.StylesBasePath;
+					return bundle.Dest ?? _options.StylesBasePath;
 			}
 			return null;
 		}
@@ -173,7 +178,7 @@ namespace MR.AspNet.Deps
 
 		private string[] ExpandFiles(string @base, IList<string> files)
 		{
-			@base = Path.Combine(_appEnv.ApplicationBasePath, _options.WebRoot, @base ?? string.Empty);
+			@base = Path.Combine(_appEnv.ApplicationBasePath, _options.WebRoot, @base);
 			return files.SelectMany(
 				(fi) =>
 				{

@@ -6,7 +6,7 @@ namespace MR.AspNet.Deps
 	{
 		public string Name { get; set; }
 		public string Base { get; set; }
-		public string Target { get; set; }
-		public IList<string> Files { get; set; }
+		public string Dest { get; set; }
+		public IList<string> Src { get; set; }
 	}
 }
