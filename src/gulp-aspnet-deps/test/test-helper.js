@@ -119,7 +119,7 @@ describe('deps', function () {
 					src: [
 						'foo.js'
 					]
-				}], { base: './foo/' }, function (bundle) {
+				}], { webroot: './foo/' }, function (bundle) {
 				bundle.src[0].should.be.exactly(join('foo', 'foo.js'));
 			});
 		});
@@ -131,7 +131,7 @@ describe('deps', function () {
 					src: [
 						'foo.js'
 					]
-				}], { base: './foo/' }, function (bundle) {
+				}], { webroot: './foo/' }, function (bundle) {
 				bundle.src[0].should.be.exactly(join('foo', 'bar', 'foo.js'));
 			});
 		});
@@ -144,7 +144,7 @@ describe('deps', function () {
 					src: [
 						'foo.js'
 					]
-				}], { base: './foo/' }, function (bundle) {
+				}], { webroot: './foo/' }, function (bundle) {
 				bundle.dest.should.be.exactly(path.normalize(path.join('foo', 'baz')));
 			});
 		});
@@ -157,7 +157,7 @@ describe('deps', function () {
 					src: [
 						'foo.js'
 					]
-				}], { base: './foo/some/' }, function (bundle) {
+				}], { webroot: './foo/some/' }, function (bundle) {
 				bundle.dest.should.be.exactly(join('foo', 'baz'));
 			});
 		});
@@ -171,7 +171,7 @@ describe('deps', function () {
 						'foo.js'
 					]
 				}];
-			process(section, { base: './foo/some/' }, function (bundle) {
+			process(section, { webroot: './foo/some/' }, function (bundle) {
 				bundle.foo = 42;
 			});
 			section[0].should.not.have.ownProperty('foo');
