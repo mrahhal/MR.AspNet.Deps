@@ -1,6 +1,6 @@
 {
   "config": {
-    "base": "./wwwroot/"
+    "webroot": "./wwwroot/"
   },
   "copy": [
     {

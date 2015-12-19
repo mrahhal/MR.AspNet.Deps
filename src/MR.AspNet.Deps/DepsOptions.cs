@@ -1,4 +1,6 @@
-﻿namespace MR.AspNet.Deps
+﻿using System.Collections.Generic;
+
+namespace MR.AspNet.Deps
 {
 	public class DepsOptions
 	{
@@ -8,18 +10,8 @@
 		public string DepsFileName { get; set; } = "deps.json";
 
 		/// <summary>
-		/// Gets or sets the web root's path. Default is "wwwroot/".
+		/// Gets or sets the section processors to use.
 		/// </summary>
-		public string WebRoot { get; set; } = "wwwroot/";
-
-		/// <summary>
-		/// Gets or sets the scripts base path relative to <see cref="WebRoot"/>. Default is "js/".
-		/// </summary>
-		public string ScriptsBasePath { get; set; } = "js/";
-
-		/// <summary>
-		/// Gets or sets the styles base path relative to <see cref="WebRoot"/>. Default is "css/".
-		/// </summary>
-		public string StylesBasePath { get; set; } = "css/";
+		public IList<SectionProcessor> Processors { get; set; } = new List<SectionProcessor>();
 	}
 }

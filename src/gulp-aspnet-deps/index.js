@@ -14,7 +14,7 @@ var overrides = {
 };
 
 var DEFAULTS = {
-	base: 'wwwroot'
+	webroot: 'wwwroot'
 };
 
 function join(/* */) {
@@ -31,7 +31,7 @@ Helper.prototype.getDefaults = function () {
 };
 
 Helper.prototype.makeAbsolutePath = function (val) {
-	return join(this.config.base, val);
+	return join(this.config.webroot, val);
 };
 
 Helper.prototype.makeAbsoluteFiles = function (bundle) {
@@ -41,7 +41,7 @@ Helper.prototype.makeAbsoluteFiles = function (bundle) {
 
 	var src = [];
 	for (var j = 0; j < bundle.src.length; j++) {
-		src.push(join(this.config.base, bundle.base, bundle.src[j]));
+		src.push(join(this.config.webroot, bundle.base, bundle.src[j]));
 	}
 	return src;
 };
@@ -130,7 +130,7 @@ Helper.prototype._processBundle = function (bundle) {
 	bundle.src = self.makeAbsoluteFiles(bundle);
 
 	if (bundle.dest) {
-		var dest = join(self.config.base, bundle.dest);
+		var dest = join(self.config.webroot, bundle.dest);
 		bundle.dest = dest;
 	}
 

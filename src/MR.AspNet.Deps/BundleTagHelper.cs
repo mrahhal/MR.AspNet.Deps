@@ -9,25 +9,17 @@ namespace MR.AspNet.Deps
 			DepsManager = depsManager;
 		}
 
-		public string Name { get; set; }
+		public string Section { get; set; }
 
-		public BundleKind Kind { get; set; }
+		public string Bundle { get; set; }
 
 		private DepsManager DepsManager { get; set; }
 
 		public override void Process(TagHelperContext context, TagHelperOutput output)
 		{
 			output.TagName = null;
-			switch (Kind)
-			{
-				case BundleKind.Script:
-					output.PreContent.SetContent(DepsManager.RenderJs(Name));
-					break;
-
-				case BundleKind.Style:
-					output.PreContent.SetContent(DepsManager.RenderCss(Name));
-					break;
-			}
+			var content = DepsManager.Render(Section, Bundle);
+			output.PreContent.SetContent(content);
 		}
 	}
 }

@@ -28,13 +28,13 @@ describe('deps', function () {
 		});
 
 		it('should correctly use the provided config', function () {
-			var helper = builder.init({ config: { base: 'some' } });
-			helper.config.should.have.property('base', 'some');
+			var helper = builder.init({ config: { webroot: 'some' } });
+			helper.config.should.have.property('webroot', 'some');
 		});
 
 		it('should correctly use the default config', function () {
 			var helper = builder.init({});
-			helper.config.should.have.property('base', helper.getDefaults().base);
+			helper.config.should.have.property('webroot', helper.getDefaults().webroot);
 		});
 	});
 
@@ -102,14 +102,14 @@ describe('deps', function () {
 			});
 		});
 
-		it('should expand src properly when no base is provided', function () {
+		it('should expand src properly when no webroot is provided', function () {
 			process([{
 					name: 'app',
 					src: [
 						'foo.js'
 					]
 				}], function (bundle, helper) {
-				bundle.src[0].should.be.exactly(join(helper.getDefaults().base , 'foo.js'));
+				bundle.src[0].should.be.exactly(join(helper.getDefaults().webroot , 'foo.js'));
 			});
 		});
 

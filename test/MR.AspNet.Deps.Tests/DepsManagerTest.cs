@@ -30,21 +30,66 @@ namespace MR.AspNet.Deps.Tests
 				.BuildServiceProvider();
 			var manager = provider.GetService<DepsManager>();
 
-			manager.RenderJs("app");
+			manager.Render("js", "app");
 		}
 
 		[Fact]
-		public void Render_UrlStartsWithSlash()
+		public void Render_SectionDoesNotExist_Throws()
 		{
 			var provider = CreateDefaultServiceCollection(
-				isDevelopment: false,
 				depsFileName: "deps1.json")
 				.BuildServiceProvider();
 			var manager = provider.GetService<DepsManager>();
 
-			var result = manager.RenderJs("app").ToString();
+			Assert.Throws<InvalidOperationException>(() =>
+			{
+				manager.Render("__something__", "app");
+			});
+		}
 
-			Assert.Contains("/js/app.js", result);
+		[Fact]
+		public void Render_BundleDoesNotExist_Throws()
+		{
+			var provider = CreateDefaultServiceCollection(
+				depsFileName: "deps1.json")
+				.BuildServiceProvider();
+			var manager = provider.GetService<DepsManager>();
+
+			Assert.Throws<InvalidOperationException>(() =>
+		   {
+			   manager.Render("js", "__something__");
+		   });
+		}
+
+		[Fact]
+		public void Render_SectionDoesNotHaveAnAssociatedProcessor_Throws()
+		{
+			var provider = CreateDefaultServiceCollection(
+				depsFileName: "deps1.json")
+				.BuildServiceProvider();
+			var manager = provider.GetService<DepsManager>();
+
+			Assert.Throws<InvalidOperationException>(() =>
+			{
+				manager.Render("some", "app");
+			});
+		}
+
+		[Fact]
+		public void Render_WithCustomProcessor_Succeeds()
+		{
+			var provider = CreateDefaultServiceCollection(
+				depsFileName: "deps1.json",
+				configureOptions: (opts) =>
+				{
+					var customProcessor = new Mock<IProcessor>();
+					customProcessor.Setup(m => m.Process(It.IsAny<ProcessingContext>(), It.IsAny<OutputHelper>()));
+					opts.Processors.Add(new SectionProcessor("some", customProcessor.Object));
+				})
+				.BuildServiceProvider();
+			var manager = provider.GetService<DepsManager>();
+
+			manager.Render("some", "app");
 		}
 
 		private ServiceCollection CreateDefaultServiceCollection(
@@ -60,7 +105,7 @@ namespace MR.AspNet.Deps.Tests
 
 			services.Configure<DepsOptions>((opts) =>
 			{
-				opts.WebRoot = "testwebroot/";
+				//opts.WebRoot = "testwebroot/";
 				if (depsFileName != null)
 				{
 					opts.DepsFileName = depsFileName;

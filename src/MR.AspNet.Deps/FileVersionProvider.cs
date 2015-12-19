@@ -8,7 +8,7 @@ using Microsoft.AspNet.Http;
 using Microsoft.AspNet.WebUtilities;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace MR.AspNet.Deps.Microsoft.AspNet.Mvc.TagHelpers.Internal
+namespace MR.AspNet.Deps
 {
 	/// <summary>
 	/// Provides version hash for a specified file.

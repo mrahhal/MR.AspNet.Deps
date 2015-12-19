@@ -1,11 +1,20 @@
 {
+  "config": {
+    "webroot": "testwebroot"
+  },
   "js": [
     {
       "name": "app",
+      "dest": "js",
       "src": [ ]
     }
   ],
   "css": [
+    {
+      "name": "app"
+    }
+  ],
+  "some": [
     {
       "name": "app"
     }
