@@ -13,9 +13,9 @@
   ],
   "js": [
     {
-      "base": "lib/",
       "name": "vendor",
       "dest": "js/",
+      "base": "lib/",
       "src": [
         "jquery/dist/jquery.js",
         "jquery-validation/dist/jquery.validate.js",
@@ -24,10 +24,10 @@
       ]
     },
     {
-      "base": "_dev/js/",
       "name": "app",
       "dest": "js/",
       "lint": true,
+      "base": "_dev/js/",
       "src": [
         "site.js"
       ]
@@ -35,18 +35,18 @@
   ],
   "css": [
     {
-      "base": "lib/",
       "name": "vendor",
       "dest": "css/",
+      "base": "lib/",
       "src": [
         "bootstrap/dist/css/bootstrap.css",
         "font-awesome/css/font-awesome.css"
       ]
     },
     {
-      "base": "compiled/css/",
       "name": "app",
       "dest": "css/",
+      "base": "compiled/css/",
       "refs": {
         "section": "sass",
         "bundles": [ "app" ]
@@ -59,8 +59,8 @@
   "sass": [
     {
       "name": "app",
-      "base": "_dev/sass/",
       "dest": "compiled/css/",
+      "base": "_dev/sass/",
       "src": [
         "*"
       ]
