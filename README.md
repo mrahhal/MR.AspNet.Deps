@@ -70,4 +70,4 @@ Use the `bundle` tag helper in your layout file:
 The bundle tag helper will generate the necessary tags based on the current environment.
 If we're in development, script and link tags will be generated for the source files in a certain bundle. Otherwise, a single tag will be generated to a file named `[bundle name].[js|css]`. This file should be generated in your gulp build process.
 
-This means your gulp build process should also depend on `deps.json` to find and process the bundles.
+This means your gulp build process should also depend on `deps.json` to find and process the bundles. And to help with this you'll use [`gulp-aspnet-deps`](src/gulp-aspnet-deps).
