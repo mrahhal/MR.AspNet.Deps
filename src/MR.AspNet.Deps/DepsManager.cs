@@ -23,6 +23,7 @@ namespace MR.AspNet.Deps
 		private IMemoryCache _memoryCache;
 		private IAppRootFileProviderAccessor _appRootFileProviderAccessor;
 		private IGlob _glob;
+		private IHttpContextAccessor _httpContextAccessor;
 		private DepsOptions _options;
 		private string _webroot;
 		private PathHelper _pathHelper;
@@ -35,21 +36,19 @@ namespace MR.AspNet.Deps
 			IMemoryCache memoryCache,
 			IAppRootFileProviderAccessor appRootFileProviderAccessor,
 			IGlob glob,
+			IHttpContextAccessor httpContextAccessor,
 			IOptions<DepsOptions> options)
 		{
 			_appEnv = appEnv;
 			_env = env;
 			_memoryCache = memoryCache;
-			_options = options.Value;
 			_appRootFileProviderAccessor = appRootFileProviderAccessor;
 			_glob = glob;
+			_httpContextAccessor = httpContextAccessor;
+			_options = options.Value;
 
 			Initialize();
 		}
-
-		[HtmlAttributeNotBound]
-		[ViewContext]
-		public ViewContext ViewContext { get; set; }
 
 		public HtmlString Render(string sectionName, string bundleName)
 		{
@@ -226,7 +225,7 @@ namespace MR.AspNet.Deps
 			_fileVersionProvider = new FileVersionProvider(
 					_env.WebRootFileProvider,
 					_memoryCache,
-					ViewContext?.HttpContext.Request.PathBase ?? new PathString());
+					_httpContextAccessor?.HttpContext?.Request.PathBase ?? new PathString());
 		}
 	}
 }

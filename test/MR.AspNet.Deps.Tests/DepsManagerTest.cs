@@ -2,6 +2,7 @@
 using System.IO;
 using Microsoft.AspNet.FileProviders;
 using Microsoft.AspNet.Hosting;
+using Microsoft.AspNet.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
@@ -136,6 +137,10 @@ namespace MR.AspNet.Deps.Tests
 				.Setup(m => m.AppRootFileProvider)
 				.Returns(new PhysicalFileProvider(approotPath));
 			services.AddInstance(appRootFileProviderAccessor.Object);
+
+			var httpContextAccessor = new Mock<IHttpContextAccessor>();
+			httpContextAccessor.Setup(m => m.HttpContext).Returns((HttpContext)null);
+			services.AddInstance(httpContextAccessor.Object);
 
 			var glob = new Mock<IGlob>();
 			glob.Setup(m => m.Expand(It.IsAny<string>())).Returns((string _) => new[] { _ });
