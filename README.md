@@ -59,12 +59,12 @@ For an example of a `deps.json` file check out the [samples](samples) folder.
 Use the `bundle` tag helper in your layout file:
 ```html
 <!-- For styles -->
-<bundle kind="BundleKind.Style" name="vendor" />
-<bundle kind="BundleKind.Style" name="app" />
+<bundle section="js" bundle="vendor" />
+<bundle section="js" bundle="app" />
 
 <!-- For scripts -->
-<bundle kind="BundleKind.Script" name="vendor" />
-<bundle kind="BundleKind.Script" name="app" />
+<bundle section="css" bundle="vendor" />
+<bundle section="css" bundle="app" />
 ```
 
 The bundle tag helper will generate the necessary tags based on the current environment.
