@@ -104,6 +104,7 @@ namespace MR.AspNet.Deps
 				Bundle = strongBundle,
 				Original = bundle,
 				HostingEnvironment = _env,
+				FileProvider = _env.WebRootFileProvider,
 				FileVersionProvider = _fileVersionProvider,
 			};
 
