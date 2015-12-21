@@ -21,6 +21,9 @@ namespace MR.AspNet.Deps
 
 	public static class OutputHelperExtensions
 	{
+		/// <summary>
+		/// Generates a &lt;link &gt; tag.
+		/// </summary>
 		public static void GenerateLink(this OutputHelper @this, string href)
 		{
 			var e = new Element("link", ClosingTagKind.None);
@@ -29,10 +32,17 @@ namespace MR.AspNet.Deps
 			@this.Add(e);
 		}
 
-		public static void GenerateScript(this OutputHelper @this, string src)
+		/// <summary>
+		/// Generates a &lt;script&gt;&lt;/script&gt; tag.
+		/// </summary>
+		public static void GenerateScript(this OutputHelper @this, string src, string type = null)
 		{
 			var e = new Element("script", ClosingTagKind.Normal);
 			e.Attributes.Add(new ElementAttribute("src", src));
+			if (type != null)
+			{
+				e.Attributes.Add(new ElementAttribute("type", type));
+			}
 			@this.Add(e);
 		}
 	}
