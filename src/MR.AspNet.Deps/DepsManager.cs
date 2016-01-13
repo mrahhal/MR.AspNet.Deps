@@ -151,7 +151,7 @@ namespace MR.AspNet.Deps
 			if (_pathHelper == null)
 			{
 				_webroot = deps.config.webroot;
-				_pathHelper = new PathHelper(_appEnv, _webroot);
+				_pathHelper = new PathHelper(_env, _appEnv, _webroot);
 			}
 		}
 
@@ -195,7 +195,8 @@ namespace MR.AspNet.Deps
 				{
 					return _glob
 						.Expand(Path.Combine(@base, fi.ToString()))
-						.Select((f) => _pathHelper.MakeRelative(f));
+						.Select(f => _pathHelper.MakeRelative(f))
+						.Where(f => _pathHelper.FileExists(f));
 				})
 				.ToArray();
 		}
