@@ -192,41 +192,18 @@ describe('deps', function () {
 		});
 
 		describe('refs', function () {
-			it('should process the refs', function () {
+			it('should process refs', function () {
 				var deps = {
 					sec1: [{
 							name: 'app',
 							refs: {
 								section: 'sec2',
-								bundles: ['app']
+								bundles: 'app'
 							},
 							src: ['bar.js']
 						}],
 					sec2: [{
-							name: 'app',
-							src: ['foo.js']
-						}]
-				};
-
-				var helper = builder.init(deps);
-
-				helper.process('sec1', 'app', function (bundle) {
-					bundle.src.length.should.be.exactly(1);
-				});
-			});
-
-			it('should not ignore the src if includeSrc is specified', function () {
-				var deps = {
-					sec1: [{
-							name: 'app',
-							refs: {
-								section: 'sec2',
-								bundles: ['app']
-							},
-							includeSrc: true,
-							src: ['bar.js']
-						}],
-					sec2: [{
+							base: 'some',
 							name: 'app',
 							src: ['foo.js']
 						}]
@@ -236,6 +213,64 @@ describe('deps', function () {
 
 				helper.process('sec1', 'app', function (bundle) {
 					bundle.src.length.should.be.exactly(2);
+					bundle.src[0].should.be.exactly(join('wwwroot', 'bar.js'));
+					bundle.src[1].should.be.exactly(join('wwwroot', 'some', 'foo.js'));
+				});
+			});
+
+			it('should process refs even without src', function () {
+				var deps = {
+					sec1: [{
+							name: 'app',
+							refs: {
+								section: 'sec2',
+								bundles: 'app'
+							}
+						}],
+					sec2: [{
+							base: 'some',
+							name: 'app',
+							src: ['foo.js']
+						}]
+				};
+
+				var helper = builder.init(deps);
+
+				helper.process('sec1', 'app', function (bundle) {
+					bundle.src.length.should.be.exactly(1);
+					bundle.src[0].should.be.exactly(join('wwwroot', 'some', 'foo.js'));
+				});
+			});
+
+			it('should process multi refs', function () {
+				var deps = {
+					sec1: [{
+							name: 'app',
+							refs: [{
+								section: 'sec2',
+								bundles: 'app'
+								}, {
+									section: 'sec3',
+									bundles: 'app'
+								}]
+						}],
+					sec2: [{
+							base: 'some',
+							name: 'app',
+							src: ['foo.js']
+						}],
+					sec3: [{
+							name: 'app',
+							src: ['baz.js']
+						}]
+				};
+
+				var helper = builder.init(deps);
+
+				helper.process('sec1', 'app', function (bundle) {
+					bundle.src.length.should.be.exactly(2);
+					bundle.src[0].should.be.exactly(join('wwwroot', 'some', 'foo.js'));
+					bundle.src[1].should.be.exactly(join('wwwroot', 'baz.js'));
 				});
 			});
 		});

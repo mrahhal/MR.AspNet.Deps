@@ -108,20 +108,37 @@ Helper.prototype.process = function (sectionName, bundleNames, action) {
 	return overrides.merge.apply(null, toMerge);
 };
 
-Helper.prototype._normalizeBundle = function (bundle) {
+function normalizeBundle(bundle) {
 	if (!bundle.base) {
 		bundle.base = '';
 	}
 	if (!bundle.src) {
 		bundle.src = [];
 	}
-};
+}
+
+function normalizeRefs(refs) {
+	var ret = [];
+	if (!_.isArray(refs)) {
+		ret.push(refs);
+	} else {
+		ret = refs;
+	}
+
+	ret.forEach(function (r) {
+		if (_.isString(r.bundles)) {
+			r.bundles = [r.bundles];
+		}
+	});
+
+	return ret;
+}
 
 Helper.prototype._processBundle = function (bundle) {
 	var self = this;
 
 	bundle = _.assign({}, bundle);
-	self._normalizeBundle(bundle);
+	normalizeBundle(bundle);
 
 	if (bundle.src && !_.isArray(bundle.src)) {
 		throw 'src should be an array';
@@ -135,15 +152,7 @@ Helper.prototype._processBundle = function (bundle) {
 	}
 
 	if (bundle.refs) {
-		if (!bundle.includeSrc) {
-			bundle.src = [];
-		}
-		var refs = [];
-		if (!_.isArray(bundle.refs)) {
-			refs.push(bundle.refs);
-		} else {
-			refs = bundle.refs;
-		}
+		var refs = normalizeRefs(bundle.refs);
 		for (var i = 0; i < refs.length; i++) {
 			var ref = refs[i];
 			var section = ref.section;
