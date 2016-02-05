@@ -105,9 +105,7 @@ describe('deps', function () {
 		it('should expand src properly when no webroot is provided', function () {
 			process([{
 					name: 'app',
-					src: [
-						'foo.js'
-					]
+					src: ['foo.js']
 				}], function (bundle, helper) {
 				bundle.src[0].should.be.exactly(join(helper.getDefaults().webroot , 'foo.js'));
 			});
@@ -116,9 +114,7 @@ describe('deps', function () {
 		it('should expand src properly when a base is provided', function () {
 			process([{
 					name: 'app',
-					src: [
-						'foo.js'
-					]
+					src: ['foo.js']
 				}], { webroot: './foo/' }, function (bundle) {
 				bundle.src[0].should.be.exactly(join('foo', 'foo.js'));
 			});
@@ -128,9 +124,7 @@ describe('deps', function () {
 			process([{
 					name: 'app',
 					base: 'bar',
-					src: [
-						'foo.js'
-					]
+					src: ['foo.js']
 				}], { webroot: './foo/' }, function (bundle) {
 				bundle.src[0].should.be.exactly(join('foo', 'bar', 'foo.js'));
 			});
@@ -141,9 +135,7 @@ describe('deps', function () {
 					name: 'app',
 					base: 'bar/some/',
 					dest: 'baz',
-					src: [
-						'foo.js'
-					]
+					src: ['foo.js']
 				}], { webroot: './foo/' }, function (bundle) {
 				bundle.dest.should.be.exactly(path.normalize(path.join('foo', 'baz')));
 			});
@@ -154,9 +146,7 @@ describe('deps', function () {
 					name: 'app',
 					base: 'bar/',
 					dest: '../baz',
-					src: [
-						'foo.js'
-					]
+					src: ['foo.js']
 				}], { webroot: './foo/some/' }, function (bundle) {
 				bundle.dest.should.be.exactly(join('foo', 'baz'));
 			});
@@ -167,9 +157,7 @@ describe('deps', function () {
 					name: 'app',
 					base: 'bar/',
 					dest: '../baz',
-					src: [
-						'foo.js'
-					]
+					src: ['foo.js']
 				}];
 			process(section, { webroot: './foo/some/' }, function (bundle) {
 				bundle.foo = 42;
@@ -197,7 +185,7 @@ describe('deps', function () {
 				}, {
 					name: 'other'
 				}];
-			process(section, [ 'app', 'other' ], function (bundle) {
+			process(section, ['app', 'other'], function (bundle) {
 				count++;
 			});
 			count.should.be.exactly(2);
@@ -212,18 +200,12 @@ describe('deps', function () {
 								section: 'sec2',
 								bundles: ['app']
 							},
-							src: [
-								'bar.js'
-							]
-						}
-					],
+							src: ['bar.js']
+						}],
 					sec2: [{
 							name: 'app',
-							src: [
-								'foo.js'
-							]
-						}
-					]
+							src: ['foo.js']
+						}]
 				};
 
 				var helper = builder.init(deps);
@@ -242,18 +224,12 @@ describe('deps', function () {
 								bundles: ['app']
 							},
 							includeSrc: true,
-							src: [
-								'bar.js'
-							]
-						}
-					],
+							src: ['bar.js']
+						}],
 					sec2: [{
 							name: 'app',
-							src: [
-								'foo.js'
-							]
-						}
-					]
+							src: ['foo.js']
+						}]
 				};
 
 				var helper = builder.init(deps);
