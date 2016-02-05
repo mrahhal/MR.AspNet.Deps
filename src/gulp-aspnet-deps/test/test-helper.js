@@ -273,6 +273,27 @@ describe('deps', function () {
 					bundle.src[1].should.be.exactly(join('wwwroot', 'baz.js'));
 				});
 			});
+
+			it('should use the same section if non is specified', function () {
+				var deps = {
+					sec1: [{
+							name: 'app',
+							refs: {
+								bundles: 'vendor'
+							}
+						}, {
+							name: 'vendor',
+							src: ['foo.js']
+						}]
+				};
+
+				var helper = builder.init(deps);
+
+				helper.process('sec1', 'app', function (bundle) {
+					bundle.src.length.should.be.exactly(1);
+					bundle.src[0].should.be.exactly(join('wwwroot', 'foo.js'));
+				});
+			});
 		});
 	});
 });

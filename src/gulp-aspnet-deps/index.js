@@ -93,7 +93,7 @@ Helper.prototype.process = function (sectionName, bundleNames, action) {
 	var bundles = this.locateBundles(sectionName, bundleNames);
 
 	var initials = bundles.map(function (bundle) {
-		var b = self._processBundle(bundle);
+		var b = self._processBundle(bundle, sectionName);
 		return action(b);
 	});
 
@@ -134,7 +134,7 @@ function normalizeRefs(refs) {
 	return ret;
 }
 
-Helper.prototype._processBundle = function (bundle) {
+Helper.prototype._processBundle = function (bundle, sectionName) {
 	var self = this;
 
 	bundle = _.assign({}, bundle);
@@ -156,7 +156,7 @@ Helper.prototype._processBundle = function (bundle) {
 		for (var i = 0; i < refs.length; i++) {
 			var ref = refs[i];
 			var section = ref.section;
-			var bundles = self.locateBundles(ref.section, ref.bundles);
+			var bundles = self.locateBundles(ref.section || sectionName, ref.bundles);
 
 			for (var j = 0; j < bundles.length; j++) {
 				var b = self._processBundle(bundles[j]);
