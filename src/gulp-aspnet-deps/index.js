@@ -4,15 +4,6 @@ var merge = require('merge-stream'),
 	_ = require('lodash'),
 	path = require('path');
 
-var injected = {};
-
-var overrides = {
-	merge: function () {
-		var fn = injected.merge || merge;
-		fn.apply(null, arguments);
-	}
-};
-
 var DEFAULTS = {
 	webroot: 'wwwroot'
 };
@@ -105,7 +96,7 @@ Helper.prototype.process = function (sectionName, bundleNames, action) {
 		}
 	};
 
-	return overrides.merge.apply(null, toMerge);
+	return merge(toMerge);
 };
 
 function normalizeBundle(bundle) {
@@ -171,7 +162,6 @@ Helper.prototype._processBundle = function (bundle, sectionName) {
 };
 
 module.exports = {
-	override: injected,
 	Helper: Helper,
 	init: function (deps) {
 		return new Helper(deps);

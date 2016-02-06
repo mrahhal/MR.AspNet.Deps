@@ -1,9 +1,14 @@
 /* global describe, it */
 
 var should = require('should'),
-	builder = require('../index.js'),
+	rewire = require('rewire'),
+	builder = rewire('../index.js'),
 	path = require('path'),
 	_ = require('lodash');
+
+builder.__set__('merge', function (values) {
+	return values;
+});
 
 function join(/* */) {
 	return path.normalize(path.join.apply(null, arguments));
@@ -39,24 +44,6 @@ describe('deps', function () {
 	});
 
 	describe('helper', function () {
-		function resetOverrides() {
-			for (var prop in builder.override) {
-				if (builder.override.hasOwnProperty(prop)) {
-					delete builder.override[prop];
-				}
-			}
-		}
-
-		beforeEach(function () {
-			builder.override.merge = function (values) {
-				return values;
-			};
-		});
-
-		afterEach(function () {
-			resetOverrides();
-		});
-
 		function process(section, bundleName, config, action) {
 			if (_.isFunction(config)) {
 				action = config;
@@ -247,8 +234,8 @@ describe('deps', function () {
 					sec1: [{
 							name: 'app',
 							refs: [{
-								section: 'sec2',
-								bundles: 'app'
+									section: 'sec2',
+									bundles: 'app'
 								}, {
 									section: 'sec3',
 									bundles: 'app'
