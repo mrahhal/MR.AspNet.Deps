@@ -1,24 +1,12 @@
-using Microsoft.AspNet.Hosting;
-
 namespace MR.AspNet.Deps
 {
-	public class CssProcessor : IProcessor
+	public class CssProcessor : EnvironmentAwareProcessorBase
 	{
-		public void Process(ProcessingContext context, OutputHelper output)
-		{
-			var bundle = context.Bundle;
+		public override string Extension => ".css";
 
-			if (context.HostingEnvironment.IsDevelopment())
-			{
-				foreach (var f in bundle.Src)
-				{
-					output.GenerateLink(f);
-				}
-			}
-			else
-			{
-				output.GenerateLink(context.FileVersionProvider.AddFileVersionToPath($"/{bundle.Dest}/{bundle.Name}.css"));
-			}
+		public override void Generate(string file, OutputHelper output)
+		{
+			output.GenerateLink(file);
 		}
 	}
 }
