@@ -29,12 +29,12 @@
 	<Target Name="GenerateVersionInfo" BeforeTargets="Build">
 		<MakeDir Directories="$(RootDir)src/Common" ContinueOnError="true" />
 		<MakeDir Directories="$(PackageOutputDir)" ContinueOnError="true" />
-		<Time Format="HHmmyyyyMMdd">
+		<Time Format="ddMMyyyyhhmm">
 			<Output TaskParameter="FormattedTime" PropertyName="Date" />
 		</Time>
 		<PropertyGroup>
 			<InfoVersion Condition="'$(BuildType)' == 'Release'">$(InformationalVersion)</InfoVersion>
-			<InfoVersion Condition="'$(BuildType)' != 'Release'">$(InformationalVersion)-d-$(Date)</InfoVersion>
+			<InfoVersion Condition="'$(BuildType)' != 'Release'">$(InformationalVersion)-d$(Date)</InfoVersion>
 			<Find>"version": ".+"</Find>
 			<Replace>"version": "$(InfoVersion)"</Replace>
 		</PropertyGroup>
