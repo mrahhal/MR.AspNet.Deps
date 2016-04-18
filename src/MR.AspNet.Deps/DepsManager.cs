@@ -9,6 +9,8 @@ using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.AspNet.Mvc.ViewFeatures;
 using Microsoft.AspNet.Razor.TagHelpers;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.FileSystemGlobbing;
+using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 using Microsoft.Extensions.OptionsModel;
 using Microsoft.Extensions.PlatformAbstractions;
 using MR.Json;
@@ -22,20 +24,20 @@ namespace MR.AspNet.Deps
 		private IHostingEnvironment _env;
 		private IMemoryCache _memoryCache;
 		private IAppRootFileProviderAccessor _appRootFileProviderAccessor;
-		private IGlob _glob;
 		private IHttpContextAccessor _httpContextAccessor;
 		private DepsOptions _options;
 		private string _webroot;
 		private PathHelper _pathHelper;
 		private FileVersionProvider _fileVersionProvider;
 		private ElementRenderer _renderer = new ElementRenderer();
+		private IServiceProvider _provider;
 
 		public DepsManager(
 			IApplicationEnvironment appEnv,
 			IHostingEnvironment env,
 			IMemoryCache memoryCache,
 			IAppRootFileProviderAccessor appRootFileProviderAccessor,
-			IGlob glob,
+			IServiceProvider provider,
 			IHttpContextAccessor httpContextAccessor,
 			IOptions<DepsOptions> options)
 		{
@@ -43,7 +45,7 @@ namespace MR.AspNet.Deps
 			_env = env;
 			_memoryCache = memoryCache;
 			_appRootFileProviderAccessor = appRootFileProviderAccessor;
-			_glob = glob;
+			_provider = provider;
 			_httpContextAccessor = httpContextAccessor;
 			_options = options.Value;
 
@@ -189,16 +191,15 @@ namespace MR.AspNet.Deps
 
 		private string[] ExpandFiles(string @base, IList<object> files)
 		{
-			@base = Path.Combine(_appEnv.ApplicationBasePath, _webroot, @base);
-			return files.SelectMany(
-				(fi) =>
-				{
-					return _glob
-						.Expand(Path.Combine(@base, fi.ToString()))
-						.Select(f => _pathHelper.MakeRelative(f))
-						.Where(f => _pathHelper.FileExists(f));
-				})
-				.ToArray();
+			var matcher = CreateMatcher();
+			var fullFiles = files.Select(f => _pathHelper.MakeFull(@base, f.ToString()));
+			var glob = new Glob(fullFiles);
+			var result = glob.Execute(new DirectoryInfoWrapper(
+				new DirectoryInfo(_appEnv.ApplicationBasePath)));
+			return result.Files
+				.Select(f => Path.Combine(_appEnv.ApplicationBasePath, f.Path))
+				.Select(f => _pathHelper.MakeRelative(f))
+				.Where(f => _pathHelper.FileExists(f)).ToArray();
 		}
 
 		private string CorrectUrl(string href)
@@ -229,5 +230,8 @@ namespace MR.AspNet.Deps
 					_memoryCache,
 					_httpContextAccessor?.HttpContext?.Request.PathBase ?? new PathString());
 		}
+
+		private Matcher CreateMatcher()
+			=> _provider.GetService(typeof(Matcher)) as Matcher;
 	}
 }

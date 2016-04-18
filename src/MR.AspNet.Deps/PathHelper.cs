@@ -25,6 +25,17 @@ namespace MR.AspNet.Deps
 			return "/" + _base.MakeRelativeUri(new Uri(path)).ToString();
 		}
 
+		public string MakeFull(string @base, string path)
+		{
+			var full = string.Empty;
+			if (path[0] == '!')
+			{
+				full = "!";
+				path = path.Substring(1);
+			}
+			return full + Path.Combine(_webroot, @base, path);
+		}
+
 		public bool FileExists(string path)
 		{
 			var fileInfo = _env.WebRootFileProvider.GetFileInfo(path);

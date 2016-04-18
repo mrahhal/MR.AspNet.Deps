@@ -22,6 +22,32 @@ namespace MR.AspNet.Deps.Tests
 		}
 
 		[Fact]
+		public void MakeFull()
+		{
+			var env = new Mock<IHostingEnvironment>();
+			var appEnv = new Mock<IApplicationEnvironment>();
+			appEnv.Setup(m => m.ApplicationBasePath).Returns("C:/Project/");
+			var helper = new PathHelper(env.Object, appEnv.Object, "wwwroot");
+
+			var result = helper.MakeFull("src/", "foo.js");
+
+			Assert.Equal("wwwroot/src/foo.js", result);
+		}
+
+		[Fact]
+		public void MakeFull_HandlesNegation()
+		{
+			var env = new Mock<IHostingEnvironment>();
+			var appEnv = new Mock<IApplicationEnvironment>();
+			appEnv.Setup(m => m.ApplicationBasePath).Returns("C:/Project/");
+			var helper = new PathHelper(env.Object, appEnv.Object, "wwwroot");
+
+			var result = helper.MakeFull("src/", "!foo.js");
+
+			Assert.Equal("!wwwroot/src/foo.js", result);
+		}
+
+		[Fact]
 		public void FileExists_ExistsButDirectory_ReturnsFalse()
 		{
 			var helper = SetupForFileExists(true, true);

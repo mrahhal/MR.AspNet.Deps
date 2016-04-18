@@ -5,6 +5,8 @@ using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileSystemGlobbing;
+using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 using Microsoft.Extensions.PlatformAbstractions;
 using Moq;
 using Xunit;
@@ -142,9 +144,11 @@ namespace MR.AspNet.Deps.Tests
 			httpContextAccessor.Setup(m => m.HttpContext).Returns((HttpContext)null);
 			services.AddInstance(httpContextAccessor.Object);
 
-			var glob = new Mock<IGlob>();
-			glob.Setup(m => m.Expand(It.IsAny<string>())).Returns((string _) => new[] { _ });
-			services.AddInstance(glob.Object);
+			var matcherMock = new Mock<Matcher>();
+			matcherMock.Setup(m => m.AddInclude(It.IsAny<string>())).Returns((string _) => matcherMock.Object);
+			matcherMock.Setup(m => m.AddExclude(It.IsAny<string>())).Returns((string _) => matcherMock.Object);
+			matcherMock.Setup(m => m.Execute(It.IsAny<DirectoryInfoBase>())).Returns((DirectoryInfoBase _) => new PatternMatchingResult(new FilePatternMatch[0]));
+			services.AddInstance(matcherMock.Object);
 
 			services.AddSingleton<DepsManager>();
 			return services;

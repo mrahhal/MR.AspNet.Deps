@@ -89,6 +89,21 @@ describe('deps', function () {
 			});
 		});
 
+		it('should handle negation', function () {
+			var deps = {
+				sec1: [{
+						name: 'app',
+						src: ['!src/*.spec.js']
+					}]
+			};
+
+			var helper = builder.init(deps);
+
+			helper.process('sec1', 'app', function (bundle) {
+				bundle.src[0].should.be.exactly('!' + join('wwwroot', 'src', '*.spec.js'));
+			});
+		});
+
 		it('should expand src properly when no webroot is provided', function () {
 			process([{
 					name: 'app',

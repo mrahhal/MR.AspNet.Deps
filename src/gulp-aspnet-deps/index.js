@@ -32,7 +32,14 @@ Helper.prototype.makeAbsoluteFiles = function (bundle) {
 
 	var src = [];
 	for (var j = 0; j < bundle.src.length; j++) {
-		src.push(join(this.config.webroot, bundle.base, bundle.src[j]));
+		var s = bundle.src[j],
+			full = '';
+		if (s.charAt(0) === '!') {
+			full = '!';
+			s = s.substring(1, s.length);
+		}
+		full += join(this.config.webroot, bundle.base, s);
+		src.push(full);
 	}
 	return src;
 };
