@@ -27,7 +27,7 @@ services.AddDeps();
 
 Add the tag helpers in `_ViewImports.cshtml`:
 ```
-@addTagHelper "*, MR.AspNet.Deps"
+@addTagHelper *, MR.AspNet.Deps
 ```
 
 ## Structure of `deps.json`
