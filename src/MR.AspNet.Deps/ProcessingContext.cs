@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNet.FileProviders;
-using Microsoft.AspNet.Hosting;
+﻿using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Hosting;
 
 namespace MR.AspNet.Deps
 {

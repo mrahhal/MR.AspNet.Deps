@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using Microsoft.AspNet.Hosting;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.PlatformAbstractions;
 
 namespace MR.AspNet.Deps
@@ -8,16 +8,14 @@ namespace MR.AspNet.Deps
 	public class PathHelper
 	{
 		private IHostingEnvironment _env;
-		private IApplicationEnvironment _appEnv;
 		private string _webroot;
 		private Uri _base;
 
-		public PathHelper(IHostingEnvironment env, IApplicationEnvironment appEnv, string webroot)
+		public PathHelper(IHostingEnvironment env, string webroot)
 		{
 			_env = env;
-			_appEnv = appEnv;
 			_webroot = EnsureEndsInSlash(webroot);
-			_base = new Uri(Path.Combine(_appEnv.ApplicationBasePath, _webroot));
+			_base = new Uri(Path.Combine(_env.ContentRootPath, _webroot));
 		}
 
 		public string MakeRelative(string path)

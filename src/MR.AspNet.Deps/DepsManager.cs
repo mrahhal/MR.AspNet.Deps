@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.AspNet.FileProviders;
-using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc.Rendering;
-using Microsoft.AspNet.Mvc.ViewFeatures;
-using Microsoft.AspNet.Razor.TagHelpers;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
-using Microsoft.Extensions.OptionsModel;
-using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.Extensions.Options;
 using MR.Json;
 using Newtonsoft.Json;
 
@@ -20,8 +17,8 @@ namespace MR.AspNet.Deps
 {
 	public class DepsManager
 	{
-		private IApplicationEnvironment _appEnv;
 		private IHostingEnvironment _env;
+
 		private IMemoryCache _memoryCache;
 		private IAppRootFileProviderAccessor _appRootFileProviderAccessor;
 		private IHttpContextAccessor _httpContextAccessor;
@@ -33,7 +30,6 @@ namespace MR.AspNet.Deps
 		private IServiceProvider _provider;
 
 		public DepsManager(
-			IApplicationEnvironment appEnv,
 			IHostingEnvironment env,
 			IMemoryCache memoryCache,
 			IAppRootFileProviderAccessor appRootFileProviderAccessor,
@@ -41,7 +37,6 @@ namespace MR.AspNet.Deps
 			IHttpContextAccessor httpContextAccessor,
 			IOptions<DepsOptions> options)
 		{
-			_appEnv = appEnv;
 			_env = env;
 			_memoryCache = memoryCache;
 			_appRootFileProviderAccessor = appRootFileProviderAccessor;
@@ -153,7 +148,7 @@ namespace MR.AspNet.Deps
 			if (_pathHelper == null)
 			{
 				_webroot = deps.config.webroot;
-				_pathHelper = new PathHelper(_env, _appEnv, _webroot);
+				_pathHelper = new PathHelper(_env, _webroot);
 			}
 		}
 
@@ -169,16 +164,14 @@ namespace MR.AspNet.Deps
 					ReadAllText(provider.GetFileInfo(depsFileName)), new GracefulExpandoObjectConverter());
 				var cacheEntryOptions =
 					new MemoryCacheEntryOptions().AddExpirationToken(provider.Watch(depsFileName));
-				_memoryCache.Set(key, deps, cacheEntryOptions);
+				_memoryCache.Set(key, (object)deps, cacheEntryOptions);
 			}
 			EnsureInitialized(deps);
 			return deps;
 		}
 
 		private string GetDepsFileNameKey()
-		{
-			return $"deps._{_options.DepsFileName}";
-		}
+			=> $"deps._{_options.DepsFileName}";
 
 		private string ReadAllText(IFileInfo fileInfo)
 		{
@@ -195,9 +188,9 @@ namespace MR.AspNet.Deps
 			var fullFiles = files.Select(f => _pathHelper.MakeFull(@base, f.ToString()));
 			var glob = new Glob(fullFiles);
 			var result = glob.Execute(new DirectoryInfoWrapper(
-				new DirectoryInfo(_appEnv.ApplicationBasePath)));
+				new DirectoryInfo(_env.ContentRootPath)));
 			return result.Files
-				.Select(f => Path.Combine(_appEnv.ApplicationBasePath, f.Path))
+				.Select(f => Path.Combine(_env.ContentRootPath, f.Path))
 				.Select(f => _pathHelper.MakeRelative(f))
 				.Where(f => _pathHelper.FileExists(f)).ToArray();
 		}

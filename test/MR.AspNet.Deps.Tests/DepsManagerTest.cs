@@ -1,13 +1,13 @@
 ﻿using System;
 using System.IO;
-using Microsoft.AspNet.FileProviders;
-using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Http;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
-using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
@@ -104,7 +104,7 @@ namespace MR.AspNet.Deps.Tests
 
 			services.AddOptions();
 
-			services.AddInstance(new Mock<IMemoryCache>().Object);
+			services.AddSingleton<IMemoryCache>(new MemoryCache(new OptionsWrapper<MemoryCacheOptions>(new MemoryCacheOptions())));
 
 			services.Configure<DepsOptions>((opts) =>
 			{
@@ -118,37 +118,34 @@ namespace MR.AspNet.Deps.Tests
 				configureOptions ??
 				((DepsOptions _) => { }));
 
-			var path = Path.GetDirectoryName(Path.GetFullPath("testwebroot"));
+			var path = Path.GetFullPath(Path.GetDirectoryName(Path.Combine(Path.GetFullPath("testwebroot"), "../../../../../")));
 			var webrootPath = Path.Combine(path, "testwebroot");
 			var approotPath = Path.Combine(path, "testapproot");
 
-			var appEnv = new Mock<IApplicationEnvironment>();
-			appEnv.Setup(m => m.ApplicationBasePath).Returns(path);
-			services.AddInstance(appEnv.Object);
-
 			var env = new Mock<IHostingEnvironment>();
+			env.Setup(m => m.ContentRootPath).Returns(path);
 			env
 				.Setup(m => m.EnvironmentName)
 				.Returns(isDevelopment ? EnvironmentName.Development : EnvironmentName.Production);
 			env.Setup(m => m.WebRootPath).Returns(webrootPath);
 			env.Setup(m => m.WebRootFileProvider).Returns(new PhysicalFileProvider(webrootPath));
-			services.AddInstance(env.Object);
+			services.AddSingleton(env.Object);
 
 			var appRootFileProviderAccessor = new Mock<IAppRootFileProviderAccessor>();
 			appRootFileProviderAccessor
 				.Setup(m => m.AppRootFileProvider)
 				.Returns(new PhysicalFileProvider(approotPath));
-			services.AddInstance(appRootFileProviderAccessor.Object);
+			services.AddSingleton(appRootFileProviderAccessor.Object);
 
 			var httpContextAccessor = new Mock<IHttpContextAccessor>();
 			httpContextAccessor.Setup(m => m.HttpContext).Returns((HttpContext)null);
-			services.AddInstance(httpContextAccessor.Object);
+			services.AddSingleton(httpContextAccessor.Object);
 
 			var matcherMock = new Mock<Matcher>();
 			matcherMock.Setup(m => m.AddInclude(It.IsAny<string>())).Returns((string _) => matcherMock.Object);
 			matcherMock.Setup(m => m.AddExclude(It.IsAny<string>())).Returns((string _) => matcherMock.Object);
 			matcherMock.Setup(m => m.Execute(It.IsAny<DirectoryInfoBase>())).Returns((DirectoryInfoBase _) => new PatternMatchingResult(new FilePatternMatch[0]));
-			services.AddInstance(matcherMock.Object);
+			services.AddSingleton(matcherMock.Object);
 
 			services.AddSingleton<DepsManager>();
 			return services;

@@ -3,10 +3,10 @@
 
 using System;
 using System.Security.Cryptography;
-using Microsoft.AspNet.FileProviders;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.WebUtilities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.FileProviders;
 
 namespace MR.AspNet.Deps
 {

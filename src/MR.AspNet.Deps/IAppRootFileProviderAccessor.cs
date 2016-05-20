@@ -1,5 +1,5 @@
-using Microsoft.AspNet.FileProviders;
-using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.FileProviders;
 
 namespace MR.AspNet.Deps
 {
@@ -10,19 +10,14 @@ namespace MR.AspNet.Deps
 
 	public class PhysicalAppRootFileProviderAccessor : IAppRootFileProviderAccessor
 	{
-		private IApplicationEnvironment _appEnv;
+		private IHostingEnvironment _env;
 
-		public PhysicalAppRootFileProviderAccessor(IApplicationEnvironment appEnv)
+		public PhysicalAppRootFileProviderAccessor(IHostingEnvironment env)
 		{
-			_appEnv = appEnv;
+			_env = env;
 		}
 
 		public IFileProvider AppRootFileProvider
-		{
-			get
-			{
-				return new PhysicalFileProvider(_appEnv.ApplicationBasePath);
-			}
-		}
+			=> _env.ContentRootFileProvider;
 	}
 }

@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNet.FileProviders;
-using Microsoft.AspNet.Hosting;
-using Microsoft.Extensions.PlatformAbstractions;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.FileProviders;
 using Moq;
 using Xunit;
 
@@ -12,9 +11,8 @@ namespace MR.AspNet.Deps.Tests
 		public void MakeRelative()
 		{
 			var env = new Mock<IHostingEnvironment>();
-			var appEnv = new Mock<IApplicationEnvironment>();
-			appEnv.Setup(m => m.ApplicationBasePath).Returns("C:/Project/");
-			var helper = new PathHelper(env.Object, appEnv.Object, "wwwroot");
+			env.Setup(m => m.ContentRootPath).Returns("C:/Project/");
+			var helper = new PathHelper(env.Object, "wwwroot");
 
 			var result = helper.MakeRelative("C:/Project/wwwroot/js/foo.js");
 
@@ -25,9 +23,8 @@ namespace MR.AspNet.Deps.Tests
 		public void MakeFull()
 		{
 			var env = new Mock<IHostingEnvironment>();
-			var appEnv = new Mock<IApplicationEnvironment>();
-			appEnv.Setup(m => m.ApplicationBasePath).Returns("C:/Project/");
-			var helper = new PathHelper(env.Object, appEnv.Object, "wwwroot");
+			env.Setup(m => m.ContentRootPath).Returns("C:/Project/");
+			var helper = new PathHelper(env.Object, "wwwroot");
 
 			var result = helper.MakeFull("src/", "foo.js");
 
@@ -38,9 +35,8 @@ namespace MR.AspNet.Deps.Tests
 		public void MakeFull_HandlesNegation()
 		{
 			var env = new Mock<IHostingEnvironment>();
-			var appEnv = new Mock<IApplicationEnvironment>();
-			appEnv.Setup(m => m.ApplicationBasePath).Returns("C:/Project/");
-			var helper = new PathHelper(env.Object, appEnv.Object, "wwwroot");
+			env.Setup(m => m.ContentRootPath).Returns("C:/Project/");
+			var helper = new PathHelper(env.Object, "wwwroot");
 
 			var result = helper.MakeFull("src/", "!foo.js");
 
@@ -86,9 +82,8 @@ namespace MR.AspNet.Deps.Tests
 			fileInfo.Setup(m => m.IsDirectory).Returns(isDirectory);
 			provider.Setup(m => m.GetFileInfo(It.IsAny<string>())).Returns(fileInfo.Object);
 			env.Setup(m => m.WebRootFileProvider).Returns(provider.Object);
-			var appEnv = new Mock<IApplicationEnvironment>();
-			appEnv.Setup(m => m.ApplicationBasePath).Returns("C:/Project/");
-			return new PathHelper(env.Object, appEnv.Object, "wwwroot");
+			env.Setup(m => m.ContentRootPath).Returns("C:/Project/");
+			return new PathHelper(env.Object, "wwwroot");
 		}
 	}
 }

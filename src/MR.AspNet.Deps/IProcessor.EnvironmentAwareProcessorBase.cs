@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 
 namespace MR.AspNet.Deps
 {

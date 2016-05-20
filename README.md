@@ -4,7 +4,7 @@
 [![Nuget version](https://img.shields.io/nuget/v/MR.AspNet.Deps.svg)](https://www.nuget.org/packages/MR.AspNet.Deps)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-An opinionated library that manages client side resources in AspNet5 (js, css, scss, ...)
+Helps with managing client side resources in Asp.Net Core (js, css, scss, ...)
 
 Check the gulp-aspnet-deps's [folder](src/gulp-aspnet-deps) for info about it.
 

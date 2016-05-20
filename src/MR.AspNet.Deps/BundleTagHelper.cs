@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Razor.TagHelpers;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace MR.AspNet.Deps
 {
@@ -19,7 +19,7 @@ namespace MR.AspNet.Deps
 		{
 			output.TagName = null;
 			var content = DepsManager.Render(Section, Bundle);
-			output.PreContent.SetContent(content);
+			output.PreContent.SetContent(content.Value);
 		}
 	}
 }
