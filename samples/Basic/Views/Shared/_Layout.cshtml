@@ -1,44 +1,43 @@
 ﻿<!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>@ViewData["Title"] - Basic</title>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - Basic</title>
 
-		<bundle section="css" bundle="vendor" />
-		<bundle section="css" bundle="app" />
-
-	</head>
-	<body>
-		<div class="navbar navbar-inverse navbar-fixed-top">
-			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a asp-controller="Home" asp-action="Index" class="navbar-brand">Basic</a>
-				</div>
-				<div class="navbar-collapse collapse">
-					<ul class="nav navbar-nav">
-						<li><a asp-controller="Home" asp-action="Index">Home</a></li>
-					</ul>
-				</div>
+	<bundle section="css" bundle="vendor" />
+	<bundle section="css" bundle="app" />
+</head>
+<body>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a asp-controller="Home" asp-action="Index" class="navbar-brand">Basic</a>
+			</div>
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li><a asp-controller="Home" asp-action="Index">Home</a></li>
+				</ul>
 			</div>
 		</div>
-		<div class="container body-content">
-			@RenderBody()
-			<hr />
-			<footer>
-				<p>&copy; 2015 - Basic</p>
-			</footer>
-		</div>
+	</div>
+	<div class="container body-content">
+		@RenderBody()
+		<hr />
+		<footer>
+			<p>&copy; 2015 - Basic</p>
+		</footer>
+	</div>
 
-		<bundle section="js" bundle="vendor" />
-		<bundle section="js" bundle="app" />
+	<bundle section="js" bundle="vendor" />
+	<bundle section="js" bundle="app" />
 
-		@RenderSection("scripts", required: false)
-	</body>
+	@RenderSection("scripts", required: false)
+</body>
 </html>
