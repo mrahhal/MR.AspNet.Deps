@@ -21,7 +21,6 @@ namespace MR.AspNet.Deps
 
 		private IMemoryCache _memoryCache;
 		private IAppRootFileProviderAccessor _appRootFileProviderAccessor;
-		private IHttpContextAccessor _httpContextAccessor;
 		private DepsOptions _options;
 		private string _webroot;
 		private PathHelper _pathHelper;
@@ -34,14 +33,12 @@ namespace MR.AspNet.Deps
 			IMemoryCache memoryCache,
 			IAppRootFileProviderAccessor appRootFileProviderAccessor,
 			IServiceProvider provider,
-			IHttpContextAccessor httpContextAccessor,
 			IOptions<DepsOptions> options)
 		{
 			_env = env;
 			_memoryCache = memoryCache;
 			_appRootFileProviderAccessor = appRootFileProviderAccessor;
 			_provider = provider;
-			_httpContextAccessor = httpContextAccessor;
 			_options = options.Value;
 
 			Initialize();
@@ -221,7 +218,7 @@ namespace MR.AspNet.Deps
 			_fileVersionProvider = new FileVersionProvider(
 					_env.WebRootFileProvider,
 					_memoryCache,
-					_httpContextAccessor?.HttpContext?.Request.PathBase ?? new PathString());
+					new PathString());
 		}
 
 		private Matcher CreateMatcher()

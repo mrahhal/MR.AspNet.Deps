@@ -19,7 +19,7 @@ namespace MR.AspNet.Deps
 		{
 			output.TagName = null;
 			var content = DepsManager.Render(Section, Bundle);
-			output.PreContent.SetContent(content.Value);
+			output.PreContent.SetHtmlContent(content.Value);
 		}
 	}
 }
