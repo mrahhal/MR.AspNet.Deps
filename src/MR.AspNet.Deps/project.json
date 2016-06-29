@@ -10,7 +10,7 @@
   },
 
   "dependencies": {
-    "GracefulExpandoObject.Json": "1.3.0",
+    "GracefulExpandoObject.Json": "1.4.0",
     "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0",
     "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0",
     "Microsoft.AspNetCore.Razor.Runtime": "1.0.0",
