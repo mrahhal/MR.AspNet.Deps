@@ -22,7 +22,8 @@
 		<TestAssemblies Include="MR.AspNet.Deps.Tests" />
 	</ItemGroup>
 	<Import Project="Build.tasks" />
-<Target Name="GenerateVersionInfo" BeforeTargets="Build">
+
+	<Target Name="GenerateVersionInfo" BeforeTargets="Build">
 		<CreateStamp>
 			<Output TaskParameter="Stamp" PropertyName="Stamp" />
 		</CreateStamp>
@@ -60,6 +61,9 @@
 	<Target Name="RestorePackages" DependsOnTargets="Clean">
 		<Exec
 			WorkingDirectory="$(RootDir)/src/%(Assemblies.Identity)/"
+			Command="dotnet restore" />
+		<Exec
+			WorkingDirectory="$(RootDir)/test/%(TestAssemblies.Identity)/"
 			Command="dotnet restore" />
 	</Target>
 
