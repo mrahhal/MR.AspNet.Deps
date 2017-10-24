@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/25d46c96646e9838d14aa7405a232fe79b3423e4/merge-stream/merge-stream.d.ts",
+    "raw": "registry:dt/merge-stream#1.0.0+20160313224417",
+    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/25d46c96646e9838d14aa7405a232fe79b3423e4/merge-stream/merge-stream.d.ts"
+  }
+}
